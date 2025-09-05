@@ -1,4 +1,4 @@
-package com.mercadobitcoin.domain
+package com.mercadobitcoin.domain.repository
 
 import com.mercadobitcoin.domain.model.CurrencyQuote
 import com.mercadobitcoin.domain.model.Exchange

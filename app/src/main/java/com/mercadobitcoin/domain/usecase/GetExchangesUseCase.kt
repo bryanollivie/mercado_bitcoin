@@ -1,6 +1,9 @@
-package com.mercadobitcoin.domain
+package com.mercadobitcoin.domain.usecase
 
+import com.mercadobitcoin.domain.model.CurrencyQuote
 import com.mercadobitcoin.domain.model.Exchange
+import com.mercadobitcoin.domain.model.ExchangeDetail
+import com.mercadobitcoin.domain.repository.ExchangeRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
