@@ -1,3 +1,4 @@
+/*
 package com.mercadobitcoin.core.navigation
 
 import androidx.compose.runtime.Composable
@@ -36,4 +37,4 @@ fun NavigationGraph() {
             )
         }
     }
-}
+}*/

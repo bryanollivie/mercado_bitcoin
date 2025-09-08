@@ -1,4 +1,5 @@
-package com.mercadobitcoin.core.di
+/*
+package com.mercadobitcoin.data.remote.api
 
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -8,7 +9,9 @@ interface ApiService {
     suspend fun getExchangeMap(
         @Query("start") start: Int = 1,
         @Query("limit") limit: Int = 100
-    ): ExchangeMapResponse
+    ): */
+/**//*
+ExchangeMapResponse
 
     @GET("v1/exchange/info")
     suspend fun getExchangeInfo(
@@ -21,4 +24,4 @@ interface ApiService {
         @Query("start") start: Int = 1,
         @Query("limit") limit: Int = 100
     ): MarketPairsResponse
-}
+}*/

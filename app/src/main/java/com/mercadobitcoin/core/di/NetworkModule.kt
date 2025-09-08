@@ -1,6 +1,8 @@
+/*
 package com.mercadobitcoin.core.di
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import com.mercadobitcoin.data.remote.dto.api.ApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -80,4 +82,4 @@ object NetworkModule {
     @Provides
     @Singleton
     //fun provideDispatcherProvider(): DispatcherProvider = DefaultDispatcherProvider()
-}
+}*/

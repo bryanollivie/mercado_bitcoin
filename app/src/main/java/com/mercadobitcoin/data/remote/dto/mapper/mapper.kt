@@ -1,4 +1,4 @@
-package com.mercadobitcoin.data.mapper
+package com.mercadobitcoin.data.remote.dto.mapper
 
 import android.os.Build
 import com.mercadobitcoin.data.remote.dto.AssetDto

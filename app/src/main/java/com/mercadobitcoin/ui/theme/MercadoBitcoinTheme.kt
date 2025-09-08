@@ -1,4 +1,4 @@
-package com.mercadobitcoin.ui.graphics
+package com.mercadobitcoin.ui.theme
 
 import android.app.Activity
 import android.os.Build
@@ -29,7 +29,7 @@ private val LightColorScheme = lightColorScheme(
 )
 
 @Composable
-fun CmcExchangeTheme(
+fun MercadoBitcoinTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit

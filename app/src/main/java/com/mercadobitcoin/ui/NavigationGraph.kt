@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.mercadobitcoin.ui.feat.exchange.ExchangesScreen
 
 
 @Composable
@@ -17,11 +18,11 @@ fun NavigationGraph() {
         startDestination = Routes.ExchangesList.route
     ) {
         composable(route = Routes.ExchangesList.route) {
-           /* ExchangesScreen(
+            ExchangesScreen(
                 onExchangeClick = { exchangeId ->
                     navController.navigate(Routes.ExchangeDetail(exchangeId).route)
                 }
-            )*/
+            )
         }
 
         composable(
@@ -35,6 +36,7 @@ fun NavigationGraph() {
                 exchangeId = exchangeId,
                 onBackClick = { navController.popBackStack() }
             )*/
+
         }
     }
 }

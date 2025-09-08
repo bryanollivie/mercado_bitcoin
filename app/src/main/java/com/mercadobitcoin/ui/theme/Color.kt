@@ -1,4 +1,4 @@
-package com.mercadobitcoin.ui.graphics
+package com.mercadobitcoin.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
