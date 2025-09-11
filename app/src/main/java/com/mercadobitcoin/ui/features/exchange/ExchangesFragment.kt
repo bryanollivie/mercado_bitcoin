@@ -12,6 +12,8 @@ import com.mercadobitcoin.core.base.BaseFragment
 import com.mercadobitcoin.core.common.hide
 import com.mercadobitcoin.core.common.show
 import com.mercadobitcoin.databinding.FragmentExchangesBinding
+import com.mercadobitcoin.ui.features.exchanges.ExchangesUiState
+import com.mercadobitcoin.ui.features.exchanges.ExchangesViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

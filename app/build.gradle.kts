@@ -49,6 +49,7 @@ android {
             isMinifyEnabled = false
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -58,7 +59,7 @@ android {
     }
 
     buildFeatures {
-        //compose = true
+        compose = true
         buildConfig = true
         viewBinding = true
     }
@@ -86,6 +87,7 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.8.3")
     implementation("com.squareup.moshi:moshi:1.15.0")
     implementation("com.squareup.moshi:moshi-kotlin:1.15.0")
+    implementation ("com.google.accompanist:accompanist-swiperefresh:0.31.3-beta")
 
     // Compose
     implementation(platform(libs.compose.bom))

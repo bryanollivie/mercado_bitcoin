@@ -1,4 +1,3 @@
-/*
 package com.mercadobitcoin.ui.features
 
 import android.os.Bundle
@@ -11,10 +10,24 @@ import androidx.compose.ui.Modifier
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.mercadobitcoin.R
-import com.mercadobitcoin.ui.NavigationGraph
+import com.mercadobitcoin.ui.AppNavGraph
 import com.mercadobitcoin.ui.theme.MercadoBitcoinTheme
 import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MercadoBitcoinTheme {
+                AppNavGraph()
+            }
+        }
+    }
+}
+
+
+/*
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

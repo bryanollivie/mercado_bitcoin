@@ -1,4 +1,4 @@
-package com.mercadobitcoin.ui.features.exchange
+package com.mercadobitcoin.ui.features.exchanges
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -6,17 +6,11 @@ import com.mercadobitcoin.domain.model.Exchange
 import com.mercadobitcoin.domain.usecase.GetExchangesUseCase
 import com.mercadobitcoin.util.AppResult
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import androidx.activity.viewModels
-import com.mercadobitcoin.core.common.DispatcherProvider
-import com.mercadobitcoin.data.repository.ExchangeRepository
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.last
 import javax.inject.Inject
 
 
