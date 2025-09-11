@@ -1,3 +1,4 @@
+/*
 package com.mercadobitcoin.ui.theme
 
 import android.app.Activity
@@ -56,4 +57,4 @@ fun MercadoBitcoinTheme(
         typography = Typography,
         content = content
     )
-}
+}*/

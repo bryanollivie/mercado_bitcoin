@@ -1,6 +1,6 @@
 package com.mercadobitcoin.core.di
 
-import com.mercadobitcoin.domain.repository.ExchangeRepository
+import com.mercadobitcoin.data.repository.ExchangeRepository
 import com.mercadobitcoin.domain.usecase.GetExchangeCurrenciesUseCase
 import com.mercadobitcoin.domain.usecase.GetExchangeDetailUseCase
 import com.mercadobitcoin.domain.usecase.GetExchangesUseCase

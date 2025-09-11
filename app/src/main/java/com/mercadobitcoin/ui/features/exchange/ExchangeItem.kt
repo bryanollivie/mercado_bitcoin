@@ -1,3 +1,4 @@
+/*
 package com.mercadobitcoin.ui.features.exchange
 
 import android.os.Build
@@ -98,4 +99,4 @@ fun ExchangeItem(
             }
         }
     }
-}
+}*/

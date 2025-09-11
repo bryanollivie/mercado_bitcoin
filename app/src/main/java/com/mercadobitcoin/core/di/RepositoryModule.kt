@@ -1,8 +1,7 @@
-/*
 package com.mercadobitcoin.core.di
 
-import com.mercadobitcoin.domain.repository.ExchangeRepository
-import com.mercadobitcoin.domain.repository.ExchangeRepositoryImpl
+import com.mercadobitcoin.data.repository.ExchangeRepository
+import com.mercadobitcoin.data.repository.ExchangeRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -18,4 +17,4 @@ abstract class RepositoryModule {
     abstract fun bindExchangeRepository(
         exchangeRepositoryImpl: ExchangeRepositoryImpl
     ): ExchangeRepository
-}*/
+}

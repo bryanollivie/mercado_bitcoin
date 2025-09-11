@@ -1,3 +1,4 @@
+/*
 package com.mercadobitcoin.ui.components
 
 import androidx.compose.foundation.layout.*
@@ -76,4 +77,4 @@ fun ExchangeHeader(
             }
         }
     }
-}
+}*/

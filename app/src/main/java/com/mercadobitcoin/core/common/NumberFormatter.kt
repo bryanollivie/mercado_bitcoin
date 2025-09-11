@@ -1,4 +1,4 @@
-package com.mercadobitcoin.core.util
+package com.mercadobitcoin.core.common
 
 import java.math.BigDecimal
 import java.text.DecimalFormat

@@ -1,15 +1,17 @@
-package com.mercadobitcoin.data.remote.dto.mapper
+package com.mercadobitcoin.data.mapper
 
 import android.os.Build
-import com.mercadobitcoin.data.remote.dto.AssetDto
-import com.mercadobitcoin.data.remote.dto.ExchangeDetailDto
-import com.mercadobitcoin.data.remote.dto.ExchangeDto
+import com.mercadobitcoin.data.dto.AssetDto
+import com.mercadobitcoin.data.dto.ExchangeDetailDto
+import com.mercadobitcoin.data.dto.ExchangeDto
 import com.mercadobitcoin.domain.model.CurrencyQuote
 import com.mercadobitcoin.domain.model.Exchange
 import com.mercadobitcoin.domain.model.ExchangeDetail
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+
+
 
 fun ExchangeDto.toDomainModel(detailDto: ExchangeDetailDto? = null): Exchange {
     return Exchange(

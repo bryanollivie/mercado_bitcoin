@@ -1,4 +1,4 @@
-package com.mercadobitcoin.data.remote.dto
+package com.mercadobitcoin.data.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

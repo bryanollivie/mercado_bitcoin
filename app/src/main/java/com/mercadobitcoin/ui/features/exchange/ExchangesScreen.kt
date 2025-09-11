@@ -1,3 +1,4 @@
+/*
 package com.mercadobitcoin.ui.features.exchange
 
 import androidx.compose.foundation.background
@@ -17,13 +18,13 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.mercadobitcoin.ui.components.EmptyView
 import com.mercadobitcoin.ui.components.ErrorView
 import com.mercadobitcoin.ui.components.LoadingView
 
 @OptIn(ExperimentalMaterial3Api::class)
 //@Preview(showSystemUi = true)
-@Composable
+*/
+/*@Composable
 fun Greeting(name: String) {
     Text(
         text = "Hello $name!",
@@ -32,7 +33,9 @@ fun Greeting(name: String) {
             .background(color = Color.Cyan) // Solid element background color
             .padding(16.dp) // Inner padding; inside background, around text)
     )
-}
+}*//*
+
+*/
 /*@Preview
 @Composable
 fun ExchangesScreen(
@@ -44,15 +47,21 @@ fun ExchangesScreen(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        *//*items(exchanges) { exchange ->
+        *//*
+*/
+/*items(exchanges) { exchange ->
             ExchangeItem(
                 exchange = exchange,
                 onClick = { onExchangeClick(exchange) }
             )
         }*//*
+*/
+/*
     }
     //val uiState by viewModel.uiState.collectAsState()
-    *//*val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    *//*
+*/
+/*val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -70,7 +79,11 @@ fun ExchangesScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            *//**//*when {
+            *//*
+*/
+/**//*
+*/
+/*when {
                 uiState.isLoading && uiState.exchanges.isEmpty() -> {
                     LoadingView()
                 }
@@ -98,7 +111,14 @@ fun ExchangesScreen(
                         }
                     }
                 }
-            }*//**//*
+            }*//*
+*/
+/**//*
+*/
+/*
         }
     }*//*
+*/
+/*
 }*/
+

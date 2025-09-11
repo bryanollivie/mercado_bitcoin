@@ -1,3 +1,4 @@
+/*
 package com.mercadobitcoin.ui
 
 import androidx.compose.runtime.Composable
@@ -32,11 +33,14 @@ fun NavigationGraph() {
             )
         ) { backStackEntry ->
             val exchangeId = backStackEntry.arguments?.getString("exchangeId") ?: ""
-            /*ExchangeDetailScreen(
+            */
+/*ExchangeDetailScreen(
                 exchangeId = exchangeId,
                 onBackClick = { navController.popBackStack() }
-            )*/
+            )*//*
+
 
         }
     }
 }
+*/

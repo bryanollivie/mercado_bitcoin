@@ -1,4 +1,4 @@
-package com.mercadobitcoin.core.util
+package com.mercadobitcoin.core.common
 
 import android.os.Build
 import androidx.annotation.RequiresApi

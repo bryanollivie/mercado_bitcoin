@@ -80,6 +80,12 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime)
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation("androidx.cardview:cardview:1.0.0")
+    implementation("androidx.fragment:fragment-ktx:1.8.3")
+    implementation("com.squareup.moshi:moshi:1.15.0")
+    implementation("com.squareup.moshi:moshi-kotlin:1.15.0")
 
     // Compose
     implementation(platform(libs.compose.bom))
@@ -88,6 +94,7 @@ dependencies {
     implementation(libs.compose.material3)
     implementation(libs.navigation.compose)
     debugImplementation(libs.compose.ui.tooling)
+
 
     // DI
     implementation(libs.hilt.android)
@@ -103,6 +110,8 @@ dependencies {
 
     // Images
     implementation(libs.coil.compose)
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    kapt("com.github.bumptech.glide:compiler:4.16.0")
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.core)
