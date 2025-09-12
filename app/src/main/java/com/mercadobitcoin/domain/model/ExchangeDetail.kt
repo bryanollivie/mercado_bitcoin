@@ -12,5 +12,5 @@ data class ExchangeDetail(
     val makerFee: BigDecimal? = null,
     val takerFee: BigDecimal? = null,
     val dateLaunched: LocalDate? = null,
-    //val currencies: List<CurrencyQuote> = emptyList()
+    val currencies: List<CurrencyQuote> = emptyList()
 )

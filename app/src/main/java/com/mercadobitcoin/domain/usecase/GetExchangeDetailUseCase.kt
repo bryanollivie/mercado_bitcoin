@@ -9,7 +9,7 @@ import javax.inject.Inject
 class GetExchangeDetailUseCase @Inject constructor(
     private val repository: ExchangeRepository
 ) {
-    suspend operator fun invoke(id: String): Flow<AppResult<ExchangeDetail>> {
+    operator fun invoke(id: String): Flow<AppResult<ExchangeDetail>> {
         return repository.getExchangeDetail(id)
     }
 }

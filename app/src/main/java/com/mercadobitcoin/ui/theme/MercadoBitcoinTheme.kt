@@ -1,4 +1,3 @@
-/*
 package com.mercadobitcoin.ui.theme
 
 import android.app.Activity
@@ -15,7 +14,57 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import androidx.compose.ui.graphics.Color
 
+private val DarkColorScheme = darkColorScheme(
+    primary = Color(0xFF4CAF50),
+    secondary = Color(0xFF81C784),
+    tertiary = Color(0xFF388E3C),
+    background = Color(0xFF121212),
+    surface = Color(0xFF1E1E1E),
+    onPrimary = Color.White,
+    onSecondary = Color.Black,
+    onBackground = Color.White,
+    onSurface = Color.White
+)
+
+private val LightColorScheme = lightColorScheme(
+    primary = Color(0xFF4CAF50),
+    secondary = Color(0xFF81C784),
+    tertiary = Color(0xFF388E3C),
+    background = Color(0xFFFFFFFF),
+    surface = Color(0xFFFFFFFF),
+    onPrimary = Color.White,
+    onSecondary = Color.Black,
+    onBackground = Color.Black,
+    onSurface = Color.Black
+)
+
+@Composable
+fun MercadoBitcoinTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    // Se true → usa cores dinâmicas do Android 12+
+    dynamicColor: Boolean = true,
+    content: @Composable () -> Unit
+) {
+    val colorScheme = when {
+        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+            val context = LocalContext.current
+            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+        }
+        darkTheme -> DarkColorScheme
+        else -> LightColorScheme
+    }
+
+    MaterialTheme(
+        colorScheme = colorScheme,
+        typography = Typography,
+        content = content
+    )
+}
+
+
+/*
 private val DarkColorScheme = darkColorScheme(
     primary = BlueCMCLight,
     secondary = PurpleGrey80,
