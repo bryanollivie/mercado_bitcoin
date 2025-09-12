@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.ktlint)
     id("kotlin-kapt")
+    id("org.jetbrains.kotlinx.kover")
 }
 
 android {
@@ -20,13 +21,12 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        //testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
 
-        // Load API key from local.properties
         val properties = Properties()
         val localPropertiesFile = rootProject.file("local.properties")
         if (localPropertiesFile.exists()) {
@@ -128,8 +128,10 @@ dependencies {
     androidTestImplementation(libs.compose.ui.test)
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+    androidTestImplementation("androidx.navigation:navigation-testing:2.7.6")
 
 }
+
 
 kapt {
     correctErrorTypes = true

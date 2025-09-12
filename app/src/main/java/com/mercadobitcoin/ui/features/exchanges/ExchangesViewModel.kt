@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mercadobitcoin.domain.model.Exchange
 import com.mercadobitcoin.domain.usecase.GetExchangesUseCase
-import com.mercadobitcoin.util.AppResult
+import com.mercadobitcoin.core.common.AppResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

@@ -3,7 +3,7 @@ package com.mercadobitcoin.data.repository
 import com.mercadobitcoin.domain.model.CurrencyQuote
 import com.mercadobitcoin.domain.model.Exchange
 import com.mercadobitcoin.domain.model.ExchangeDetail
-import com.mercadobitcoin.util.AppResult
+import com.mercadobitcoin.core.common.AppResult
 import kotlinx.coroutines.flow.Flow
 
 interface ExchangeRepository {

@@ -3,10 +3,10 @@ package com.mercadobitcoin.ui.features.exchangedetails
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mercadobitcoin.core.common.AppResult
 import com.mercadobitcoin.data.repository.ExchangeRepository
 import com.mercadobitcoin.domain.model.ExchangeDetail
 import com.mercadobitcoin.ui.navigation.Routes
-import com.mercadobitcoin.util.AppResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,6 +33,7 @@ class ExchangeDetailViewModel @Inject constructor(
             repository.getExchangeDetail(exchangeId)
                 .collect { result ->
                     _uiState.value = when (result) {
+
                         is AppResult.Success -> _uiState.value.copy(
                             exchangeDetail = result.data,
                             isLoading = false,

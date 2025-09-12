@@ -1,7 +1,4 @@
-package com.mercadobitcoin.util
-
-import com.mercadobitcoin.domain.model.Exchange
-import kotlinx.coroutines.flow.Flow
+package com.mercadobitcoin.core.common
 
 sealed class Result<out T> {
     data class Success<out T>(val data: T) : Result<T>()

@@ -1,289 +1,114 @@
-/*
 package com.mercadobitcoin.exchanges
 
-import androidx.compose.ui.test.*
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
+import androidx.navigation.testing.TestNavHostController
 import com.mercadobitcoin.domain.model.Exchange
 import com.mercadobitcoin.ui.features.exchanges.ExchangesScreen
 import com.mercadobitcoin.ui.features.exchanges.ExchangesUiState
-import com.mercadobitcoin.ui.features.exchanges.ExchangesViewModel
 import com.mercadobitcoin.ui.theme.MercadoBitcoinTheme
-import com.mercadobitcoin.util.TestData
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 
+// Fake ViewModel só com o necessário
+class FakeExchangesViewModel(initial: ExchangesUiState) {
+    private val _uiState = MutableStateFlow(initial)
+    val uiState: StateFlow<ExchangesUiState> = _uiState
+
+    fun update(state: ExchangesUiState) {
+        _uiState.value = state
+    }
+
+    fun refresh() {
+        // no-op, você pode contar chamadas se precisar
+    }
+}
+
 class ExchangesScreenTest {
+
+    private lateinit var navController: TestNavHostController
 
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    private lateinit var viewModel: ExchangesViewModel
-    private lateinit var stateFlow: MutableStateFlow<ExchangesUiState>
+    private lateinit var viewModel: FakeExchangesViewModel
 
     @Before
     fun setup() {
-        viewModel = mockk(relaxed = true)
-        stateFlow = MutableStateFlow(ExchangesUiState())
-        every { viewModel.uiState } returns stateFlow
+        viewModel = FakeExchangesViewModel(ExchangesUiState())
     }
 
-    @Test
-    fun exchangesScreen_showsLoadingState() {
-        // Given
-        stateFlow.value = ExchangesUiState(
-            isLoading = true,
-            exchanges = emptyList(),
-            error = null
-        )
-
-        // When
+    private fun setContent() {
         composeTestRule.setContent {
             MercadoBitcoinTheme {
                 ExchangesScreen(
-                    onClick = {,
-                    viewModel = viewModel
+                   navController = navController
                 )
             }
         }
-
-        // Then
-        composeTestRule
-            .onNodeWithTag("LoadingIndicator")
-            .assertIsDisplayed()
     }
 
     @Test
-    fun exchangesScreen_showsExchangesList() {
-        // Given
+    fun showsLoading() {
+        viewModel.update(ExchangesUiState(isLoading = true))
+        setContent()
+
+        composeTestRule.onNodeWithTag("LoadingIndicator").assertIsDisplayed()
+    }
+
+    @Test
+    fun showsList() {
         val exchanges = listOf(
-            Exchange(
-                id = "1",
-                name = "Binance",
-                logoUrl = "https://logo.url",
-                spotVolumeUsd = BigDecimal("1000000"),
-                dateLaunched = LocalDate.of(2017, 7, 14)
-            ),
-            Exchange(
-                id = "2",
-                name = "Coinbase",
-                logoUrl = "https://logo2.url",
-                spotVolumeUsd = BigDecimal("500000"),
-                dateLaunched = LocalDate.of(2012, 6, 20)
-            )
+            Exchange("1", "Binance", "logo.png", BigDecimal("1000"), LocalDate.of(2017, 7, 14)),
+            Exchange("2", "Coinbase", "logo2.png", BigDecimal("500"), LocalDate.of(2012, 6, 20))
         )
+        viewModel.update(ExchangesUiState(exchanges = exchanges))
+        setContent()
 
-        stateFlow.value = ExchangesUiState(
-            isLoading = false,
-            exchanges = exchanges,
-            error = null
-        )
-
-        // When
-        composeTestRule.setContent {
-            CmcExchangeTheme {
-                ExchangesScreen(
-                    onExchangeClick = {},
-                    viewModel = viewModel
-                )
-            }
-        }
-
-        // Then
-        composeTestRule
-            .onNodeWithText("Binance")
-            .assertIsDisplayed()
-
-        composeTestRule
-            .onNodeWithText("Coinbase")
-            .assertIsDisplayed()
-
-        composeTestRule
-            .onNodeWithText("Volume: $ 1,000,000.00")
-            .assertIsDisplayed()
-
-        composeTestRule
-            .onNodeWithText("Since: 14/07/2017")
-            .assertIsDisplayed()
+        composeTestRule.onNodeWithText("Binance").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Coinbase").assertIsDisplayed()
     }
 
     @Test
-    fun exchangesScreen_clickOnExchange_triggersNavigation() {
-        // Given
-        val exchanges = listOf(
-            Exchange(
-                id = "1",
-                name = "Binance",
-                logoUrl = null,
-                spotVolumeUsd = BigDecimal("1000000"),
-                dateLaunched = null
-            )
-        )
+    fun clickExchange_triggersCallback() {
+        val exchanges = listOf(Exchange("1", "Binance", null, BigDecimal("1000"), null))
+        viewModel.update(ExchangesUiState(exchanges = exchanges))
 
-        stateFlow.value = ExchangesUiState(
-            isLoading = false,
-            exchanges = exchanges,
-            error = null
-        )
-
-        var clickedExchangeId: String? = null
-
-        // When
+        var clickedId: String? = null
         composeTestRule.setContent {
-            CmcExchangeTheme {
+            MercadoBitcoinTheme {
                 ExchangesScreen(
-                    onExchangeClick = { id -> clickedExchangeId = id },
-                    viewModel = viewModel
+                    navController = navController
                 )
             }
         }
 
-        composeTestRule
-            .onNodeWithText("Binance")
-            .performClick()
-
-        // Then
-        assert(clickedExchangeId == "1")
+        composeTestRule.onNodeWithText("Binance").performClick()
+        assert(clickedId == "1")
     }
 
     @Test
-    fun exchangesScreen_showsErrorWithRetry() {
-        // Given
-        stateFlow.value = ExchangesUiState(
-            isLoading = false,
-            exchanges = emptyList(),
-            error = "Network error occurred"
-        )
+    fun showsError() {
+        viewModel.update(ExchangesUiState(error = "Network error"))
+        setContent()
 
-        // When
-        composeTestRule.setContent {
-            CmcExchangeTheme {
-                ExchangesScreen(
-                    onExchangeClick = {},
-                    viewModel = viewModel
-                )
-            }
-        }
-
-        // Then
-        composeTestRule
-            .onNodeWithText("Network error occurred")
-            .assertIsDisplayed()
-
-        composeTestRule
-            .onNodeWithText("Retry")
-            .assertIsDisplayed()
-            .performClick()
-
-        verify { viewModel.refresh() }
+        composeTestRule.onNodeWithText("Network error").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Retry").assertIsDisplayed()
     }
 
     @Test
-    fun exchangesScreen_showsEmptyState() {
-        // Given
-        stateFlow.value = ExchangesUiState(
-            isLoading = false,
-            exchanges = emptyList(),
-            error = null
-        )
+    fun showsEmptyState() {
+        viewModel.update(ExchangesUiState())
+        setContent()
 
-        // When
-        composeTestRule.setContent {
-            CmcExchangeTheme {
-                ExchangesScreen(
-                    onExchangeClick = {},
-                    viewModel = viewModel
-                )
-            }
-        }
-
-        // Then
-        composeTestRule
-            .onNodeWithText("No exchanges available")
-            .assertIsDisplayed()
+        composeTestRule.onNodeWithText("No exchanges available").assertIsDisplayed()
     }
-
-    @Test
-    fun exchangesScreen_swipeRefresh_triggersRefresh() {
-        // Given
-        stateFlow.value = ExchangesUiState(
-            isLoading = false,
-            exchanges = TestData.exchanges,
-            error = null
-        )
-
-        // When
-        composeTestRule.setContent {
-            CmcExchangeTheme {
-                ExchangesScreen(
-                    onExchangeClick = {},
-                    viewModel = viewModel
-                )
-            }
-        }
-
-        // Perform swipe down gesture
-        composeTestRule
-            .onNodeWithTag("SwipeRefresh")
-            .performTouchInput {
-                swipeDown()
-            }
-
-        // Then
-        verify { viewModel.refresh() }
-    }
-
-    @Test
-    fun exchangesScreen_scrollToTop_buttonAppearsAfterScroll() {
-        // Given - Many exchanges to enable scrolling
-        val manyExchanges = (1..20).map { index ->
-            Exchange(
-                id = index.toString(),
-                name = "Exchange $index",
-                logoUrl = null,
-                spotVolumeUsd = BigDecimal(index * 1000),
-                dateLaunched = null
-            )
-        }
-
-        stateFlow.value = ExchangesUiState(
-            isLoading = false,
-            exchanges = manyExchanges,
-            error = null
-        )
-
-        // When
-        composeTestRule.setContent {
-            CmcExchangeTheme {
-                ExchangesScreen(
-                    onExchangeClick = {},
-                    viewModel = viewModel
-                )
-            }
-        }
-
-        // Initially FAB should not be visible
-        composeTestRule
-            .onNodeWithTag("ScrollToTopFAB")
-            .assertDoesNotExist()
-
-        // Scroll down
-        composeTestRule
-            .onNodeWithTag("ExchangesList")
-            .performScrollToIndex(15)
-
-        // Then FAB should appear
-        composeTestRule
-            .onNodeWithTag("ScrollToTopFAB")
-            .assertIsDisplayed()
-            .performClick()
-
-        // Should scroll back to top
-        composeTestRule
-            .onNodeWithText("Exchange 1")
-            .assertIsDisplayed()
-    }
-}*/
+}

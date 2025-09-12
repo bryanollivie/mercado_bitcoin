@@ -33,8 +33,7 @@ object TestData {
         websiteUrl = "https://binance.com",
         makerFee = BigDecimal("0.10"),
         takerFee = BigDecimal("0.10"),
-        dateLaunched = LocalDate.of(2017, 7, 14),
-        //currencies = currencies
+        dateLaunched = LocalDate.of(2017, 7, 14)
     )
 
     val currencies = listOf(

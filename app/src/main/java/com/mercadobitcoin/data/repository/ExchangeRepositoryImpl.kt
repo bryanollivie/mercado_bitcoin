@@ -1,15 +1,12 @@
 package com.mercadobitcoin.data.repository
 
-import android.os.Build
-import android.os.ext.SdkExtensions
-import android.util.Log
 import com.mercadobitcoin.core.network.ApiService
 import com.mercadobitcoin.data.mapper.toCurrencyQuote
 import com.mercadobitcoin.data.mapper.toDomainModel
 import com.mercadobitcoin.domain.model.CurrencyQuote
 import com.mercadobitcoin.domain.model.Exchange
 import com.mercadobitcoin.domain.model.ExchangeDetail
-import com.mercadobitcoin.util.AppResult
+import com.mercadobitcoin.core.common.AppResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll

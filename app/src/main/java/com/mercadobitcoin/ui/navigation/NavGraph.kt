@@ -8,10 +8,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.mercadobitcoin.ui.features.exchangedetails.ExchangeDetailScreen
-//import com.mercadobitcoin.ui.features.exchangedetails.ExchangeDetailScreen
 import com.mercadobitcoin.ui.features.exchanges.ExchangesScreen
 
 object Routes {
@@ -43,74 +41,3 @@ fun AppNavGraph(navController: NavHostController) {
         }
     }
 }
-
-/*
-fun AppNavGraph(navController: NavHostController = rememberNavController()) {
-    NavHost(navController = navController, startDestination = Screen.ExchangesList.route) {
-
-        //Tela de Exchanges
-        */
-/*composable(Screen.ExchangesList.route) {
-            ExchangesScreen { exchange ->
-                //Vai para a tela de detalhes
-                navController.navigate(Screen.ExchangeDetail.createRoute(exchange.id))
-            }
-        }*//*
-
-
-        //Tela de Exchanges
-        composable(Screen.ExchangesList.route) {
-            ExchangesScreen(navController = navController)
-        }
-
-        //Tela de detalhe das exchanges
-        composable(
-            route = Screen.ExchangeDetail.route + "/{exchangeId}",
-            arguments = listOf(navArgument("exchangeId") { type = NavType.StringType })
-        ) { backStackEntry ->
-
-            ExchangeDetailScreen(
-                viewModel = hiltViewModel(backStackEntry), // importante: amarra ao backStackEntry com o arg
-                onBack = { navController.navigateUp() }
-            )
-        }
-
-    }
-}
-*/
-
-/*
-@Composable
-fun NavigationGraph() {
-    val navController = rememberNavController()
-
-    NavHost(
-        navController = navController,
-        startDestination = Routes.ExchangesList.route
-    ) {
-        composable(route = Routes.ExchangesList.route) {
-            ExchangesScreen(
-                onExchangeClick = { exchangeId ->
-                    navController.navigate(Routes.ExchangeDetail(exchangeId).route)
-                }
-            )
-        }
-
-        composable(
-            route = Routes.ExchangeDetail.routePattern,
-            arguments = listOf(
-                navArgument("exchangeId") { type = NavType.StringType }
-            )
-        ) { backStackEntry ->
-            val exchangeId = backStackEntry.arguments?.getString("exchangeId") ?: ""
-            */
-/*ExchangeDetailScreen(
-                exchangeId = exchangeId,
-                onBackClick = { navController.popBackStack() }
-            )*//*
-
-
-        }
-    }
-}
-*/

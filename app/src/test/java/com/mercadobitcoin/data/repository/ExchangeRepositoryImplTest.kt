@@ -8,7 +8,7 @@ import com.mercadobitcoin.data.dto.ExchangeDetailResponse
 import com.mercadobitcoin.data.dto.ExchangeDto
 import com.mercadobitcoin.data.dto.ExchangeListResponse
 import com.mercadobitcoin.data.dto.StatusDto
-import com.mercadobitcoin.util.AppResult
+import com.mercadobitcoin.core.common.AppResult
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.mockk
