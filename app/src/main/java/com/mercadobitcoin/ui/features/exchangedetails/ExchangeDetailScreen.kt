@@ -65,7 +65,7 @@ fun ExchangeDetailScreen(
             state.isLoading -> LoadingView()
             state.error != null -> ErrorView(
                 message = state.error,
-                onRetry = { viewModel.loadExchangeDetailFull(state.exchangeDetail?.id ?: "") },
+                onRetry = { viewModel.refresh() },
             )
             state.exchangeDetail != null -> ExchangeDetailContent(
                 exchange = state.exchangeDetail!!,
@@ -85,7 +85,7 @@ fun ExchangeDetailContent(
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
-        modifier = modifier,                    // use o modifier recebido
+        modifier = modifier,
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {

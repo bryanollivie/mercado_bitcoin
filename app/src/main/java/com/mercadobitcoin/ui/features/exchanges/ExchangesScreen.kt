@@ -41,7 +41,7 @@ fun ExchangesScreen(
         }
     ) { innerPadding ->
         PullToRefreshBox(
-            isRefreshing = state.isLoading,            // mostra spinner do pull-to-refresh
+            isRefreshing = state.isLoading && !state.exchanges.isEmpty(), // mostra spinner do pull-to-refresh
             onRefresh = { viewModel.refresh() },       // dispara refresh (sem LaunchedEffect)
             modifier = Modifier
                 .fillMaxSize()
