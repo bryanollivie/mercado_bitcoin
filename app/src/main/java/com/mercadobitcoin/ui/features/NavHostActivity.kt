@@ -1,3 +1,4 @@
+/*
 package com.mercadobitcoin.ui.features
 
 
@@ -29,9 +30,11 @@ class NavHostActivity : AppCompatActivity() {
     }
 
     fun openExchangeDetail(id: String) {
-       /* supportFragmentManager.beginTransaction()
+       */
+/* supportFragmentManager.beginTransaction()
             .replace(containerId, ExchangeDetailFragment.newInstance(id))
             .addToBackStack(null)
-            .commit()*/
+            .commit()*//*
+
     }
-}
+}*/

@@ -3,14 +3,10 @@ package com.mercadobitcoin.ui.features
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.ui.Modifier
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.mercadobitcoin.R
-import com.mercadobitcoin.ui.AppNavGraph
+import androidx.compose.runtime.Composable
+import androidx.navigation.compose.rememberNavController
+import com.mercadobitcoin.ui.navigation.AppNavGraph
 import com.mercadobitcoin.ui.theme.MercadoBitcoinTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -19,13 +15,20 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MercadoBitcoinTheme {
-                AppNavGraph()
-            }
+            setContent { MercadoBitcoinApp() }
         }
     }
 }
 
+@Composable
+fun MercadoBitcoinApp() {
+    // Criado UMA vez; escopo raiz estável
+    val navController = rememberNavController()
+
+    MaterialTheme {
+        AppNavGraph(navController = navController)
+    }
+}
 
 /*
 @AndroidEntryPoint

@@ -17,6 +17,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import java.io.IOException
@@ -31,8 +32,10 @@ class ExchangeRepositoryImpl @Inject constructor(
 ) : ExchangeRepository {
 
     override fun getExchangesWithDetails(page: Int): Flow<AppResult<List<Exchange>>> = flow {
+
         emit(AppResult.Loading)
         try {
+            Log.e("Repository", "getExchanges")
             val listResponse = api.getExchanges(start = (page - 1) * 20 + 1)
 
             // Busca todos os detalhes em paralelo
@@ -40,8 +43,13 @@ class ExchangeRepositoryImpl @Inject constructor(
                 listResponse.data.map { exchangeDto ->
                     async {
                         try {
+                            Log.e("Repository", "getExchangeInfo")
+                            Log.e("Repository", "Busca Info ID:${exchangeDto.id.toString()}")
                             val detail = api.getExchangeInfo(exchangeDto.id.toString())
+                            //val detail = getExchangeDetail(exchangeDto.id.toString())
+                            Log.e("Repository", "Converte Info ID:${exchangeDto.id.toString()}")
                             exchangeDto.toDomainModel(detail.data[exchangeDto.id.toString()])
+                            //exchangeDto.toDomainModel(detail.data[exchangeDto.id.toString()])
                         } catch (e: Exception) {
                             exchangeDto.toDomainModel(null)
                         }
@@ -54,17 +62,38 @@ class ExchangeRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    override fun getExchangeDetailFull(id: String): Flow<AppResult<ExchangeDetail>> =
+        flow {
+            combine(
+                getExchangeDetail(id),    // Requisição 1
+                getExchangeCurrencies(id)  // Requisição 2
+            ) { detailResult, currenciesResult ->
+                when {
+                    // Ambos sucesso ✅
+                    detailResult is AppResult.Success && currenciesResult is AppResult.Success -> {
+                        AppResult.Success(
+                            detailResult.data.copy(currencies = currenciesResult.data)
+                        )
+                    }
+
+                    // Detail OK, moedas falharam ⚠️
+                    detailResult is AppResult.Success && currenciesResult is AppResult.Error -> {
+                        AppResult.Success(detailResult.data) // Retorna sem moedas
+                    }
+
+                    // Detail falhou ❌
+                    detailResult is AppResult.Error -> detailResult
+
+                    // Loading ⏳
+                    else -> AppResult.Loading
+                }
+            }.flowOn(Dispatchers.IO)
+        }
+
     override fun getExchanges(page: Int): Flow<AppResult<List<Exchange>>> =
         flow {
-            //Log.d("Repository", ">>> Iniciando requisição de exchanges")
             try {
                 val response = api.getExchanges(start = page, limit = 100)
-                //Log.d("Repository", "<<< Recebeu ${response.data.size} exchanges")
-
-               /* val exchanges = response.data.map { dto ->
-                    dto.toDomainModel(null) // simplificado p/ debug
-                }*/
-
                 val exchanges = response.data.map { exchangeDto ->
                     try {
                         // Busca detalhes adicionais
@@ -78,58 +107,33 @@ class ExchangeRepositoryImpl @Inject constructor(
                         exchangeDto.toDomainModel(null)
                     }
                 }
-
                 emit(AppResult.Success(exchanges))
-                //Log.d("Repository", "Emitido SUCCESS")
             } catch (e: Exception) {
-                //Log.e("Repository", "Erro na requisição: ${e.message}")
                 emit(AppResult.Error(e.message ?: "Erro desconhecido"))
             }
         }.flowOn(Dispatchers.IO)
 
+
     override fun getExchangeDetail(id: String): Flow<AppResult<ExchangeDetail>> =
         flow {
-            //Log.d("Repository", ">>> Iniciando requisição de exchanges")
             try {
                 val response = api.getExchangeInfo(id)
                 val detailDto = response.data[id]
 
                 if (detailDto != null) {
                     val exchangeDetail = detailDto.toDomainModel()
-                    Dispatchers.shutdown()
-                    //emit(AppResult.Success(exchangeDetail))
+
+                    emit(AppResult.Success(exchangeDetail))
                 } else {
-                    //emit(AppResult.Error(Exception("Exchange not found with ID: $id").toString()))
+                    emit(AppResult.Error(Exception("Exchange not found with ID: $id").toString()))
                 }
 
             } catch (e: Exception) {
-                //Log.e("Repository", "Erro na requisição: ${e.message}")
+
                 emit(AppResult.Error(e.message ?: "Erro desconhecido"))
             }
         }.flowOn(Dispatchers.IO)
 
-
-    /*override fun getExchangeDetail(id: String): Flow<AppResult<ExchangeDetail>> = flow {
-        emit(AppResult.Loading)
-        try {
-            val response = api.getExchangeInfo(id)
-            val detailDto = response.data[id]
-
-            if (detailDto != null) {
-                val exchangeDetail = detailDto.toDomainModel()
-                emit(AppResult.Success(exchangeDetail))
-            } else {
-                emit(AppResult.Error(Exception("Exchange not found with ID: $id").toString()))
-            }
-        } catch (e: Exception) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && SdkExtensions.getExtensionVersion(
-                    Build.VERSION_CODES.S
-                ) >= 7
-            ) {
-                emit(AppResult.Error("${e.message}"))
-            }
-        }
-    }.flowOn(Dispatchers.IO)*/
 
     override fun getExchangeCurrencies(id: String): Flow<AppResult<List<CurrencyQuote>>> =
         flow {

@@ -1,16 +1,22 @@
 package com.mercadobitcoin.ui.features.exchanges
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mercadobitcoin.domain.model.Exchange
 import com.mercadobitcoin.domain.usecase.GetExchangesUseCase
 import com.mercadobitcoin.util.AppResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 
@@ -22,53 +28,66 @@ class ExchangesViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ExchangesUiState())
     val uiState: StateFlow<ExchangesUiState> = _uiState.asStateFlow()
 
+    private var loadJob: Job? = null
+
+    // trava simples para garantir que a carga inicial só rode 1x por VM
+    private var didInit = false
+
     init {
+        Log.e("VM", "created ${hashCode()}")
         loadExchangesWithDetails()
     }
 
+    /** Garante que a inicialização só acontece 1x por instância do VM */
+    fun ensureInit() {
+        Log.e("VM", "ensureInit called")
+        if (didInit) return
+        didInit = true
+        loadExchangesWithDetails()
+    }
+
+
     fun loadExchangesWithDetails() {
-        viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+        Log.e("VM", "load called")
+        // evita re-disparar se já está carregando
+        if (loadJob?.isActive == true) return
 
-            getExchangesUseCase(page = 1).collectLatest { result ->
-                _uiState.value = when (result) {
-                    is AppResult.Success -> _uiState.value.copy(
-                        exchanges = result.data,
-                        isLoading = false,
-                        error = null
-                    )
-                    is AppResult.Error -> _uiState.value.copy(
-                        isLoading = false,
-                        error = result.message
-                    )
-                    else -> _uiState.value
+        loadJob = viewModelScope.launch {
+            getExchangesUseCase(page = 1)
+                .onStart {
+                    _uiState.update { it.copy(isLoading = true, error = null) }
                 }
-            }
+                .distinctUntilChanged() // se o usecase emite a mesma coisa de novo, ignore
+                .catch { e ->
+                    _uiState.update { it.copy(isLoading = false, error = e.message ?: "Erro inesperado") }
+                }
+                .collectLatest { result ->
+                    when (result) {
+                        is AppResult.Loading -> {
+                            _uiState.update { it.copy(isLoading = true, error = null) }
+                        }
+                        is AppResult.Success -> {
+                            _uiState.update {
+                                it.copy(
+                                    exchanges = result.data,
+                                    isLoading = false,
+                                    error = null
+                                )
+                            }
+                        }
+                        is AppResult.Error -> {
+                            _uiState.update { it.copy(isLoading = false, error = result.message) }
+                        }
+                    }
+                }
         }
     }
 
-    fun loadExchanges() {
-        viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
-
-            getExchangesUseCase(page = 1).collectLatest { result ->
-                _uiState.value = when (result) {
-                    is AppResult.Success -> _uiState.value.copy(
-                        exchanges = result.data,
-                        isLoading = false,
-                        error = null
-                    )
-                    is AppResult.Error -> _uiState.value.copy(
-                        isLoading = false,
-                        error = result.message
-                    )
-                    else -> _uiState.value
-                }
-            }
-        }
+    fun refresh() {
+        loadJob?.cancel()
+        didInit = true // já inicializado; evita novo “init” depois do refresh
+        loadExchangesWithDetails()
     }
-
-    fun refresh() =  loadExchangesWithDetails()
 }
 
 data class ExchangesUiState(
@@ -76,98 +95,3 @@ data class ExchangesUiState(
     val isLoading: Boolean = false,
     val error: String? = null
 )
-/*
-
-@HiltViewModel
-class ExchangesViewModel @Inject constructor(
-    private val getExchangesUseCase: GetExchangesUseCase
-) : ViewModel() {
-
-    private val _uiState = MutableStateFlow(ExchangesUiState())
-    val uiState: StateFlow<ExchangesUiState> = _uiState
-
-    init {
-        loadExchanges()
-    }
-
-    fun loadExchanges() {
-        viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
-            getExchangesUseCase(page = 1).collectLatest { result ->
-                _uiState.value = when (result) {
-                    is AppResult.Success -> _uiState.value.copy(
-                        exchanges = result.data,
-                        isLoading = false
-                    )
-                    is AppResult.Error -> _uiState.value.copy(
-                        isLoading = false,
-                        error = result.message
-                    )
-                    else -> _uiState.value
-                }
-            }
-        }
-    }
-
-}
-
-
-*/
-
-/*@HiltViewModel
-class ExchangesViewModel @Inject constructor(
-    private val getExchanges: GetExchangesUseCase
-) : ViewModel() {
-
-    private val _state = MutableStateFlow<Flow<AppResult<List<Exchange>>>>(AppResult.Loading)
-    val state: Flow<AppResult<List<Exchange>>> = _state
-
-    private var page = 1
-
-    fun load(initial: Boolean = false) {
-        if (initial) page = 1
-        viewModelScope.launch {
-            _state.value = AppResult.Loading
-            _state.value = getExchanges(page)
-            if (_state.value is AppResult.Success) page++
-        }
-    }
-}*/
-/*
-@HiltViewModel
-class ExchangesViewModel @Inject constructor(
-    private val getExchangesUseCase: GetExchangesUseCase
-) : ViewModel() {
-
-    private val _uiState = MutableStateFlow(ExchangesUiState())
-    val uiState: StateFlow<ExchangesUiState> = _uiState.asStateFlow()
-
-    fun loadExchanges() {
-        viewModelScope.launch {
-            getExchangesUseCase(page = 1).collect { result ->
-                _uiState.value =
-                    when (result)
-                {
-                    is AppResult.Loading -> _uiState.value.copy(isLoading = true)
-                    is AppResult.Success -> _uiState.value.copy(
-                        exchanges = result.data,
-                        isLoading = false,
-                        error = null
-                    )
-                    is AppResult.Error -> _uiState.value.copy(
-                        isLoading = false,
-                        error = result.message
-                    )
-                }
-            }
-        }
-    }
-
-    //
-}
-
-data class ExchangesUiState(
-    val exchanges: List<Exchange> = emptyList(),
-    val isLoading: Boolean = false,
-    val error: String? = null
-)*/
