@@ -8,9 +8,11 @@ import com.mercadobitcoin.domain.model.CurrencyQuote
 import com.mercadobitcoin.domain.model.Exchange
 import com.mercadobitcoin.domain.model.ExchangeDetail
 import java.math.BigDecimal
+import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-
+import java.util.Locale
 
 
 fun ExchangeDto.toDomainModel(detailDto: ExchangeDetailDto? = null): Exchange {
@@ -49,7 +51,7 @@ private fun parseDate(dateString: String): LocalDate? {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             LocalDate.parse(dateString.take(10), DateTimeFormatter.ISO_DATE)
         } else {
-            TODO("VERSION.SDK_INT < O")
+            SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(dateString)?.toInstant()?.atZone(ZoneId.systemDefault())?.toLocalDate()
         }
     } catch (e: Exception) {
         null
