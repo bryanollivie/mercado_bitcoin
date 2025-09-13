@@ -18,7 +18,7 @@ Este projeto foi desenvolvido como um desafio técnico, com o objetivo de consum
 - Arquitetura MVVM com Flow/StateFlow e repositórios ✅  
 - Injeção de dependência com Hilt ✅  
 - Tratamento de estados de UI: loading, sucesso e erro ✅  
-- Testes unitários para viewmodels e mappers ✅  
+- Testes unitários para viewmodels ✅  
 - Testes de UI com Compose Test e navegação ✅  
 - Configuração de cobertura de testes com Kover ✅  
 - Padronização de código com ktlint ✅  
