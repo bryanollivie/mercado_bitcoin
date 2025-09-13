@@ -1,10 +1,8 @@
 package com.mercadobitcoin.data.mapper
 
 import android.os.Build
-import com.mercadobitcoin.data.dto.AssetDto
 import com.mercadobitcoin.data.dto.ExchangeDetailDto
 import com.mercadobitcoin.data.dto.ExchangeDto
-import com.mercadobitcoin.domain.model.CurrencyQuote
 import com.mercadobitcoin.domain.model.Exchange
 import com.mercadobitcoin.domain.model.ExchangeDetail
 import java.math.BigDecimal
@@ -35,14 +33,6 @@ fun ExchangeDetailDto.toDomainModel(): ExchangeDetail {
         makerFee = makerFee?.let { BigDecimal(it) },
         takerFee = takerFee?.let { BigDecimal(it) },
         dateLaunched = dateLaunched?.let { parseDate(it) }
-    )
-}
-
-fun AssetDto.toCurrencyQuote(): CurrencyQuote? {
-    val price = quote?.usd?.price ?: return null
-    return CurrencyQuote(
-        name = currencyName,
-        priceUsd = BigDecimal(price)
     )
 }
 

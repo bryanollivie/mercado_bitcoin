@@ -1,12 +1,11 @@
 package com.mercadobitcoin.data.repository
 
+import com.mercadobitcoin.core.common.AppResult
 import com.mercadobitcoin.core.network.ApiService
-import com.mercadobitcoin.data.mapper.toCurrencyQuote
+import com.mercadobitcoin.data.dto.CurrencyDto
 import com.mercadobitcoin.data.mapper.toDomainModel
-import com.mercadobitcoin.domain.model.CurrencyQuote
 import com.mercadobitcoin.domain.model.Exchange
 import com.mercadobitcoin.domain.model.ExchangeDetail
-import com.mercadobitcoin.core.common.AppResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -65,14 +64,42 @@ class ExchangeRepositoryImpl @Inject constructor(
             }
         }.flowOn(Dispatchers.IO)
 
+    override fun getExchangeCurrencies(id: String): Flow<AppResult<List<CurrencyDto>>> =
+        flow {
+            //emit(AppResult.Loading)
+            try {
+                val response = api.getExchangeAssets(id)
+                val currencies = response.data.mapNotNull {
+                    it.currency
+                }
+                if (currencies != null) {
+                    emit(AppResult.Success(currencies.toList()))
+                }
+                /*val currencies = response.data
+                    .map { it.currency.toCurrencyQuote() } // mapeia a moeda de cada wallet
+                    .distinctBy { it.symbol }              // evita duplicados
+                    .sortedByDescending { it.priceUsd }    // ordena por preço
 
-    override fun getExchangeCurrencies(id: String): Flow<AppResult<List<CurrencyQuote>>> =
+                emit(AppResult.Success(currencies))*/
+            } catch (e: Exception) {
+                emit(AppResult.Error(e.message ?: "Erro desconhecido"))
+            }
+        }.flowOn(Dispatchers.IO)
+
+    /*override fun getExchangeCurrencies(id: String): Flow<AppResult<AssetsResponse>> =
         flow {
             emit(AppResult.Loading)
             try {
                 val response = api.getExchangeAssets(id)
-
-                val currencies = response.data[id]
+                *//*
+                var currenciesDto = response.data.mapNotNull {
+                }
+                if (currenciesDto != null) {
+                    emit(AppResult.Success(currenciesDto))
+                } else {
+                    emit(AppResult.Error(Exception("Exchange not found with ID: $id").toString()))
+                }*//*
+                val currencies = response.data
                     ?.mapNotNull { assetDto ->
                         assetDto.toCurrencyQuote()
                     }
@@ -84,5 +111,8 @@ class ExchangeRepositoryImpl @Inject constructor(
             } catch (e: Exception) {
                 emit(AppResult.Error(e.message ?: "Erro desconhecido"))
             }
-        }.flowOn(Dispatchers.IO)
+        }.flowOn(Dispatchers.IO)*/
+
+
+
 }

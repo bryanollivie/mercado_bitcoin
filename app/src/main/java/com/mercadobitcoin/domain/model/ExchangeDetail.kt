@@ -1,5 +1,6 @@
 package com.mercadobitcoin.domain.model
 
+import com.mercadobitcoin.data.dto.CurrencyDto
 import java.math.BigDecimal
 import java.time.LocalDate
 
@@ -12,5 +13,5 @@ data class ExchangeDetail(
     val makerFee: BigDecimal? = null,
     val takerFee: BigDecimal? = null,
     val dateLaunched: LocalDate? = null,
-    val currencies: List<CurrencyQuote> = emptyList()
+    val currencies: List<CurrencyDto> = emptyList()
 )

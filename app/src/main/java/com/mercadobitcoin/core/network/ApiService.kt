@@ -1,6 +1,6 @@
 package com.mercadobitcoin.core.network
 
-import com.mercadobitcoin.data.dto.CurrencyQuoteResponse
+import com.mercadobitcoin.data.dto.AssetsResponse
 import com.mercadobitcoin.data.dto.ExchangeDetailResponse
 import com.mercadobitcoin.data.dto.ExchangeListResponse
 import retrofit2.http.GET
@@ -23,5 +23,5 @@ interface ApiService {
     @GET("v1/exchange/assets")
     suspend fun getExchangeAssets(
         @Query("id") id: String
-    ): CurrencyQuoteResponse
+    ): AssetsResponse
 }
