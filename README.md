@@ -2,8 +2,8 @@
 
 Este projeto foi desenvolvido como um desafio técnico, com o objetivo de consumir a API da **CoinMarketCap** e exibir informações de exchanges e moedas, utilizando **Kotlin, Jetpack Compose, Hilt, Retrofit e testes (unitários e de UI).**
 
+![mercado_bitcoin_final webm (1)](https://github.com/user-attachments/assets/a119edda-dcce-4d54-a419-e1a52f87f835)
 
-![mercado_bitcoin webm](https://github.com/user-attachments/assets/81482367-7d25-494b-b986-c647d8fe7d3d)
 
 
 
