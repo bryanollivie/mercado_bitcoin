@@ -1,4 +1,4 @@
-# 📱 Projeto CoinMarketCap Exchanges
+# 📱 Projeto Exchanges
 
 Este projeto foi desenvolvido como um desafio técnico, com o objetivo de consumir a API da **CoinMarketCap** e exibir informações de exchanges e moedas, utilizando **Kotlin, Jetpack Compose, Hilt, Retrofit e testes (unitários e de UI).**
 
