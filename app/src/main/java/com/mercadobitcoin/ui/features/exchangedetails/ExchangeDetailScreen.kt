@@ -38,6 +38,7 @@ import com.mercadobitcoin.core.common.DateFormatter
 import com.mercadobitcoin.core.common.NumberFormatter
 import com.mercadobitcoin.core.common.WebsiteLink
 import com.mercadobitcoin.domain.model.ExchangeDetail
+import com.mercadobitcoin.ui.components.CurrencyChart
 import com.mercadobitcoin.ui.components.ErrorView
 import com.mercadobitcoin.ui.components.LoadingView
 
@@ -52,7 +53,9 @@ fun ExchangeDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("${state.exchangeDetail?.name}") },
+
+                title = { Text(state.exchangeDetail?.name ?: "Voltar") },
+
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Voltar")
@@ -160,37 +163,11 @@ fun ExchangeDetailContent(
                 Text("Moedas", style = MaterialTheme.typography.titleLarge)
             }
 
+            //Grafico das moedas
             item {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(300.dp),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    items(exchange.currencies.size, key = { it }) { index ->
-                        val currency = exchange.currencies[index]
-
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(2.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Spacer(Modifier.width(1.dp))
-                                Text(currency.name, style = MaterialTheme.typography.bodyLarge)
-                            }
-
-                            Text(
-                                NumberFormatter.formatCurrency(currency.priceUsd.toBigDecimal()),
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                    }
-                }
+                CurrencyChart(exchange.currencies)
             }
+
         }
     }
 }

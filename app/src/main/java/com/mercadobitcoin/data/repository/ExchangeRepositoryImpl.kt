@@ -2,6 +2,7 @@ package com.mercadobitcoin.data.repository
 
 import com.mercadobitcoin.core.common.AppResult
 import com.mercadobitcoin.core.network.ApiService
+import com.mercadobitcoin.core.network.HttpErrorHandler
 import com.mercadobitcoin.data.dto.CurrencyDto
 import com.mercadobitcoin.data.mapper.toDomainModel
 import com.mercadobitcoin.domain.model.Exchange
@@ -13,6 +14,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import retrofit2.HttpException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -41,9 +43,12 @@ class ExchangeRepositoryImpl @Inject constructor(
                 }.awaitAll()
             }
             emit(AppResult.Success(exchangesWithDetails))
-        } catch (e: Exception) {
-            emit(AppResult.Error(e.message ?: "Erro desconhecido"))
+        } catch (e: HttpException) {
+            val error = HttpErrorHandler.fromCode(e.code(), e.message())
+            val friendlyMessage = HttpErrorHandler.userFriendlyMessage(error)
+            emit(AppResult.Error(friendlyMessage))
         }
+
     }.flowOn(Dispatchers.IO)
 
 
@@ -59,8 +64,10 @@ class ExchangeRepositoryImpl @Inject constructor(
                     emit(AppResult.Error(Exception("not found with ID: $id").toString()))
                 }
 
-            } catch (e: Exception) {
-                emit(AppResult.Error(e.message ?: "Erro desconhecido"))
+            } catch (e: HttpException) {
+                val error = HttpErrorHandler.fromCode(e.code(), e.message())
+                val friendlyMessage = HttpErrorHandler.userFriendlyMessage(error)
+                emit(AppResult.Error(friendlyMessage))
             }
         }.flowOn(Dispatchers.IO)
 
@@ -76,8 +83,10 @@ class ExchangeRepositoryImpl @Inject constructor(
                     emit(AppResult.Success(currencies.toList()))
                 }
 
-            } catch (e: Exception) {
-                emit(AppResult.Error(e.message ?: "Erro desconhecido"))
+            } catch (e: HttpException) {
+                val error = HttpErrorHandler.fromCode(e.code(), e.message())
+                val friendlyMessage = HttpErrorHandler.userFriendlyMessage(error)
+                emit(AppResult.Error(friendlyMessage))
             }
         }.flowOn(Dispatchers.IO)
 
