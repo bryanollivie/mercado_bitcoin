@@ -6,8 +6,8 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ktlint)
-    //alias(libs.plugins.ksp)
     id("kotlin-kapt")
+    id("org.jetbrains.kotlinx.kover")
 }
 
 android {
@@ -21,13 +21,12 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        //testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
 
-        // Load API key from local.properties
         val properties = Properties()
         val localPropertiesFile = rootProject.file("local.properties")
         if (localPropertiesFile.exists()) {
@@ -51,6 +50,7 @@ android {
     }
 
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
@@ -88,6 +88,8 @@ dependencies {
     implementation("com.squareup.moshi:moshi:1.15.0")
     implementation("com.squareup.moshi:moshi-kotlin:1.15.0")
     implementation ("com.google.accompanist:accompanist-swiperefresh:0.31.3-beta")
+    implementation("com.google.android.material:material:1.12.0")
+    implementation("androidx.compose.material3:material3:1.3.0")
 
     // Compose
     implementation(platform(libs.compose.bom))
@@ -96,7 +98,6 @@ dependencies {
     implementation(libs.compose.material3)
     implementation(libs.navigation.compose)
     debugImplementation(libs.compose.ui.tooling)
-
 
     // DI
     implementation(libs.hilt.android)
@@ -125,10 +126,12 @@ dependencies {
     testImplementation(libs.turbine)
     testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.compose.ui.test)
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+    androidTestImplementation("androidx.navigation:navigation-testing:2.7.6")
 
-    implementation("com.google.android.material:material:1.12.0")
-    implementation("androidx.compose.material3:material3:1.3.0")
 }
+
 
 kapt {
     correctErrorTypes = true
