@@ -56,7 +56,7 @@ class ExchangeRepositoryImpl @Inject constructor(
                     val exchangeDetail = detailDto.toDomainModel()
                     emit(AppResult.Success(exchangeDetail))
                 } else {
-                    emit(AppResult.Error(Exception("Exchange not found with ID: $id").toString()))
+                    emit(AppResult.Error(Exception("not found with ID: $id").toString()))
                 }
 
             } catch (e: Exception) {
@@ -66,7 +66,7 @@ class ExchangeRepositoryImpl @Inject constructor(
 
     override fun getExchangeCurrencies(id: String): Flow<AppResult<List<CurrencyDto>>> =
         flow {
-            //emit(AppResult.Loading)
+            emit(AppResult.Loading)
             try {
                 val response = api.getExchangeAssets(id)
                 val currencies = response.data.mapNotNull {
@@ -75,44 +75,10 @@ class ExchangeRepositoryImpl @Inject constructor(
                 if (currencies != null) {
                     emit(AppResult.Success(currencies.toList()))
                 }
-                /*val currencies = response.data
-                    .map { it.currency.toCurrencyQuote() } // mapeia a moeda de cada wallet
-                    .distinctBy { it.symbol }              // evita duplicados
-                    .sortedByDescending { it.priceUsd }    // ordena por preço
 
-                emit(AppResult.Success(currencies))*/
             } catch (e: Exception) {
                 emit(AppResult.Error(e.message ?: "Erro desconhecido"))
             }
         }.flowOn(Dispatchers.IO)
-
-    /*override fun getExchangeCurrencies(id: String): Flow<AppResult<AssetsResponse>> =
-        flow {
-            emit(AppResult.Loading)
-            try {
-                val response = api.getExchangeAssets(id)
-                *//*
-                var currenciesDto = response.data.mapNotNull {
-                }
-                if (currenciesDto != null) {
-                    emit(AppResult.Success(currenciesDto))
-                } else {
-                    emit(AppResult.Error(Exception("Exchange not found with ID: $id").toString()))
-                }*//*
-                val currencies = response.data
-                    ?.mapNotNull { assetDto ->
-                        assetDto.toCurrencyQuote()
-                    }
-                    ?.distinctBy { it.name }
-                    ?.sortedByDescending { it.priceUsd }
-                    ?: emptyList()
-
-                emit(AppResult.Success(currencies))
-            } catch (e: Exception) {
-                emit(AppResult.Error(e.message ?: "Erro desconhecido"))
-            }
-        }.flowOn(Dispatchers.IO)*/
-
-
 
 }

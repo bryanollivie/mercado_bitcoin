@@ -76,45 +76,6 @@ class ExchangeDetailViewModel @Inject constructor(
                 }
         }
     }
-    /*fun loadExchangeDetailFull(exchangeId: String) {
-        viewModelScope.launch {
-            repository.getExchangeDetail(exchangeId)
-                .collect { result ->
-
-                    //repository.getExchangeCurrencies(result.data.id)
-
-                    _uiState.value = when (result) {
-
-                        is AppResult.Success -> {
-                            Log.e("Result: ", "${result.data.id}")
-                            repository.getExchangeCurrencies(result.data.id)
-
-
-                            _uiState.value.copy(
-                                exchangeDetail = result.data,
-                                isLoading = false,
-                                error = null
-                            )
-                        }
-
-                        is AppResult.Error -> {
-                            _uiState.value.copy(
-                                isLoading = false,
-                                error = result.message
-                            )
-                        }
-
-                        else -> {
-                            _uiState.value
-                        }
-                    }
-
-                }
-
-        }
-    }*/
-
-
 
     fun refresh() {
         loadExchangeDetailFull(exchangeId)

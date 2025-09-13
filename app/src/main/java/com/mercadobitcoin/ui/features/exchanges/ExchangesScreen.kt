@@ -34,7 +34,7 @@ fun ExchangesScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Corretoras de Bitcoin") })
+            TopAppBar(title = { Text("Exchanges de Bitcoin") })
         }
     ) { innerPadding ->
         PullToRefreshBox(
