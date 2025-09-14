@@ -2,16 +2,15 @@ package com.mercadobitcoin.ui.features.exchanges
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mercadobitcoin.core.common.AppResult
 import com.mercadobitcoin.domain.model.Exchange
 import com.mercadobitcoin.domain.usecase.GetExchangesUseCase
-import com.mercadobitcoin.core.common.AppResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -25,18 +24,25 @@ class ExchangesViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ExchangesUiState())
     val uiState: StateFlow<ExchangesUiState> = _uiState.asStateFlow()
 
+    private var currentPage = 1
+    private var isLoadingMore = false
+    private var hasMorePages = true
+
     init {
-        loadExchangesWithDetails()
+        loadExchanges(page = currentPage)
     }
 
-    fun loadExchangesWithDetails() {
-
+    private fun loadExchanges(page: Int, isRefresh: Boolean = false) {
         viewModelScope.launch {
-            getExchangesUseCase(page = 1)
+            if (isLoadingMore) return@launch
+            isLoadingMore = true
+
+            getExchangesUseCase(page)
                 .onStart {
-                    _uiState.update { it.copy(isLoading = true, error = null) }
+                    if (isRefresh || page == 1) {
+                        _uiState.update { it.copy(isLoading = true, error = null) }
+                    }
                 }
-                .distinctUntilChanged()
                 .catch { e ->
                     _uiState.update {
                         it.copy(
@@ -44,17 +50,27 @@ class ExchangesViewModel @Inject constructor(
                             error = e.message ?: "Erro inesperado"
                         )
                     }
+                    isLoadingMore = false
                 }
                 .collectLatest { result ->
                     when (result) {
+
                         is AppResult.Loading -> {
                             _uiState.update { it.copy(isLoading = true, error = null) }
                         }
 
                         is AppResult.Success -> {
+                            val newList = if (isRefresh || page == 1) {
+                                result.data
+                            } else {
+                                _uiState.value.exchanges + result.data
+                            }
+                            // se a API retornou vazio, não há mais páginas
+                            hasMorePages = result.data.isNotEmpty()
+
                             _uiState.update {
                                 it.copy(
-                                    exchanges = result.data,
+                                    exchanges = newList,
                                     isLoading = false,
                                     error = null
                                 )
@@ -65,14 +81,24 @@ class ExchangesViewModel @Inject constructor(
                             _uiState.update { it.copy(isLoading = false, error = result.message) }
                         }
                     }
+                    isLoadingMore = false
                 }
         }
     }
 
+    fun loadNextPage() {
+        if (!hasMorePages || isLoadingMore) return
+        currentPage++
+        loadExchanges(currentPage)
+    }
+
     fun refresh() {
-        loadExchangesWithDetails()
+        currentPage = 1
+        hasMorePages = true
+        loadExchanges(currentPage, isRefresh = true)
     }
 }
+
 
 data class ExchangesUiState(
     val exchanges: List<Exchange> = emptyList(),

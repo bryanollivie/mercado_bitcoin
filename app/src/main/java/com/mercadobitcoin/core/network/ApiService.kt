@@ -11,7 +11,7 @@ interface ApiService {
     @GET("v1/exchange/map")
     suspend fun getExchanges(
         @Query("start") start: Int = 1,
-        @Query("limit") limit: Int = 20,
+        @Query("limit") limit: Int = 15,
         @Query("sort") sort: String = "id"
     ): ExchangeListResponse
 

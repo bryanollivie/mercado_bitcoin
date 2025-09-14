@@ -66,10 +66,14 @@ fun ExchangesScreen(
                             ExchangeItem(
                                 exchange = exchange,
                                 onClick = {
-                                    navController.navigate(Routes.exchangeDetailRoute(exchange.id)
-                                    )
+                                    navController.navigate(Routes.exchangeDetailRoute(exchange.id))
                                 }
                             )
+
+                            // 🔹 Quando chega no último item → carrega mais
+                            if (exchange == state.exchanges.lastOrNull() && !state.isLoading) {
+                                viewModel.loadNextPage()
+                            }
                         }
                     }
                 }
