@@ -92,6 +92,10 @@ class ExchangesViewModel @Inject constructor(
         loadExchanges(currentPage)
     }
 
+    fun onSearchQueryChanged(query: String) {
+        _uiState.update { it.copy(searchQuery = query) }
+    }
+
     fun refresh() {
         currentPage = 1
         hasMorePages = true
@@ -103,5 +107,6 @@ class ExchangesViewModel @Inject constructor(
 data class ExchangesUiState(
     val exchanges: List<Exchange> = emptyList(),
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val searchQuery: String? = ""
 )

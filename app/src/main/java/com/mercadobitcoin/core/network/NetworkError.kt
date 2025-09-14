@@ -29,7 +29,8 @@ object HttpErrorHandler {
                 is NetworkError.NotFound ->
                     "O recurso solicitado não foi encontrado."
                 is NetworkError.TooManyRequests ->
-                    "Você fez muitas requisições.Aguarde alguns segundos e tente novamente."
+                    "Estamos enfrentando instabilidade no servidor. Tente novamente mais tarde."
+                    //"Você fez muitas requisições.Aguarde alguns segundos e tente novamente."
                 is NetworkError.InternalServerError ->
                     "Estamos enfrentando instabilidade no servidor. Tente novamente mais tarde."
                 is NetworkError.Unknown ->
