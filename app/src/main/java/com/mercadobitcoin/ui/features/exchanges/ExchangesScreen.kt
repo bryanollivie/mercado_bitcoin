@@ -48,14 +48,9 @@ fun ExchangesScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
-
-    // 🔹 Estado local para texto do campo de busca
     var query by remember { mutableStateOf("") }
-
-    // 🔹 Estado do PullToRefreshBox
     var isRefreshing by remember { mutableStateOf(false) }
 
-    // 🔹 Desliga o refresh quando a API terminar (sucesso ou erro)
     LaunchedEffect(state.isLoading) {
         if (!state.isLoading) {
             isRefreshing = false
@@ -90,7 +85,7 @@ fun ExchangesScreen(
 
                 else -> {
                     Column {
-                        // 🔹 Campo de busca + botão
+                       // Campo de busca + botão
                         /*OutlinedTextField(
                             value = query,
                             onValueChange = { query = it },
@@ -111,7 +106,7 @@ fun ExchangesScreen(
                             }
                         )*/
 
-                        // 🔹 Aplica filtro
+                        //aplica filtro
                         val filteredExchanges = state.exchanges
                             .distinctBy { it.id }
                             .filter { it.name.contains(state.searchQuery, ignoreCase = true) }
@@ -134,7 +129,7 @@ fun ExchangesScreen(
                                         }
                                     )
 
-                                    // 🔹 Paginação
+                                    //paginação
                                     if (exchange == filteredExchanges.lastOrNull() && !state.isLoading) {
                                         viewModel.loadNextPage()
                                     }
@@ -159,7 +154,7 @@ fun ExchangesScreen(
         }
     }
 
-    // 🔹 Mostrar Snackbar quando dados vierem do cache
+    //mostrar Snackbar quando dados vierem do cache
     LaunchedEffect(state.fromCache) {
         if (state.fromCache) {
             scope.launch {

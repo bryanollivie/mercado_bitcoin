@@ -39,7 +39,6 @@ fun LoadingView() {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // 🔹 Lottie animation
             val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.loader))
             val progress by animateLottieCompositionAsState(
                 composition,
@@ -54,7 +53,6 @@ fun LoadingView() {
 
             Spacer(Modifier.height(16.dp))
 
-            // 🔹 Mensagem opcional
             Text(
                 text = "Carregando...",
                 style = MaterialTheme.typography.bodyLarge,
@@ -79,7 +77,6 @@ fun ErrorView(message: String?, onRetry: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // 🔹 Animação Lottie de erro
             val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.error))
             val progress by animateLottieCompositionAsState(
                 composition,
@@ -94,18 +91,16 @@ fun ErrorView(message: String?, onRetry: () -> Unit) {
 
             Spacer(Modifier.height(16.dp))
 
-            // 🔹 Mensagem de erro
             Text(
                 text = message ?: "Erro desconhecido",
                 color = Color.Red,
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()     
+                modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(Modifier.height(16.dp))
 
-            // 🔹 Botão de tentar novamente
             Button(
                 onClick = onRetry,
                 modifier = Modifier.padding(top = 16.dp)
@@ -126,7 +121,6 @@ fun EmptyView(onBack: (() -> Unit)? = null) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // 🔹 Animação Lottie
         val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.no_data))
         val progress by animateLottieCompositionAsState(
             composition,
@@ -141,7 +135,6 @@ fun EmptyView(onBack: (() -> Unit)? = null) {
                 .padding(bottom = 16.dp)
         )
 
-        // 🔹 Texto amigável
         Text(
             "Nenhuma exchange encontrada :(",
             style = MaterialTheme.typography.bodyLarge,
@@ -150,9 +143,5 @@ fun EmptyView(onBack: (() -> Unit)? = null) {
 
         Spacer(Modifier.height(16.dp))
 
-        // 🔹 Botão voltar
-        /*Button(onClick = { onBack?.invoke() }) {
-            Text("Voltar")
-        }*/
     }
 }

@@ -27,7 +27,6 @@ class ExchangeRepositoryImpl @Inject constructor(
     private val dao: ExchangeDao
 ) : ExchangeRepository {
 
-
     override fun getExchangesWithDetails(page: Int): Flow<AppResult<List<Exchange>>> =
         flow {
             emit(AppResult.Loading)
@@ -69,45 +68,16 @@ class ExchangeRepositoryImpl @Inject constructor(
 
                 //cache local
                 val error = HttpErrorHandler.fromCode(e.code())
-                //emit(AppResult.Error(error))
                 val cached = dao.getAll().map { it.toDomain() }
+
                 if (cached.isNotEmpty()) {
                     emit(AppResult.Success(cached, fromCache = true))
-                    //emit(AppResult.Success(cached, fromCache = false))
                 } else {
                     emit(AppResult.Error(error))
                 }
 
             }
         }.flowOn(Dispatchers.IO)
-
-    /*override fun getExchangesWithDetails(page: Int): Flow<AppResult<List<Exchange>>> = flow {
-
-        emit(AppResult.Loading)
-        try {
-            val listResponse = api.getExchanges(start = (page - 1) * 20 + 1)
-
-            // Busca todos os detalhes em paralelo
-            val exchangesWithDetails = coroutineScope {
-                listResponse.data.map { exchangeDto ->
-                    async {
-                        try {
-                            val detail = api.getExchangeInfo(exchangeDto.id.toString())
-                            exchangeDto.toDomainModel(detail.data[exchangeDto.id.toString()])
-                        } catch (e: Exception) {
-                            exchangeDto.toDomainModel(null)
-                        }
-                    }
-                }.awaitAll()
-            }
-            emit(AppResult.Success(exchangesWithDetails))
-        } catch (e: HttpException) {
-            val error = HttpErrorHandler.fromCode(e.code(), e.message())
-            val friendlyMessage = HttpErrorHandler.userFriendlyMessage(error)
-            emit(AppResult.Error(friendlyMessage))
-        }
-
-    }.flowOn(Dispatchers.IO)*/
 
     override fun getExchangeDetail(id: String): Flow<AppResult<ExchangeDetail>> =
         flow {
