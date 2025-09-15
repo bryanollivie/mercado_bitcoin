@@ -98,13 +98,18 @@ class ExchangesViewModel @Inject constructor(
     fun searchExchanges(query: String) {
         viewModelScope.launch {
             // só dispara se mudou de fato
-            if (query == _uiState.value.searchQuery) return@launch
+            //if (query == _uiState.value.searchQuery) return@launch
 
-            _uiState.update { it.copy(isLoading = true, error = null, searchQuery = query) }
+            //_uiState.update { it.copy(isLoading = true, error = null, searchQuery = query) }
 
             getExchangesUseCase(page = 1)
                 .catch { e ->
-                    _uiState.update { it.copy(isLoading = false, error = e.message ?: "Erro inesperado") }
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            error = e.message ?: "Erro inesperado"
+                        )
+                    }
                 }
                 .collectLatest { result ->
                     when (result) {
@@ -120,9 +125,11 @@ class ExchangesViewModel @Inject constructor(
                                 )
                             }
                         }
+
                         is AppResult.Error -> {
                             _uiState.update { it.copy(isLoading = false, error = result.message) }
                         }
+
                         else -> Unit
                     }
                 }

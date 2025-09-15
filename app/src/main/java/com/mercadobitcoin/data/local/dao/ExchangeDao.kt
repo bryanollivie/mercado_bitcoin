@@ -12,6 +12,9 @@ interface ExchangeDao {
     suspend fun getAll(): List<ExchangeEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(exchange: ExchangeEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(exchanges: List<ExchangeEntity>)
 
     @Query("DELETE FROM exchanges")

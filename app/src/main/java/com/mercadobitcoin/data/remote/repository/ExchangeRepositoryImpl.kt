@@ -4,7 +4,9 @@ import com.mercadobitcoin.core.common.AppResult
 import com.mercadobitcoin.core.network.ApiService
 import com.mercadobitcoin.core.network.HttpErrorHandler
 import com.mercadobitcoin.data.local.dao.ExchangeDao
+import com.mercadobitcoin.data.mapper.toDomain
 import com.mercadobitcoin.data.mapper.toDomainModel
+import com.mercadobitcoin.data.mapper.toEntity
 import com.mercadobitcoin.data.remote.dto.CurrencyDto
 import com.mercadobitcoin.domain.model.Exchange
 import com.mercadobitcoin.domain.model.ExchangeDetail
@@ -34,14 +36,14 @@ class ExchangeRepositoryImpl @Inject constructor(
                 val listResponse = api.getExchanges(start = (page - 1) * 20 + 1)
 
                 //tenta buscar o cache para atualizar a tela e dar agilidade
-                /*val cached = dao.getAll()
+                val cached = dao.getAll()
                     .map { it.toDomain() }
                     .distinctBy { it.id }
 
                 if (cached.isNotEmpty()) {
-                    emit(AppResult.Success(cached, fromCache = true))
-                }*/
 
+                    emit(AppResult.Success(cached, fromCache = true))
+                }
 
                 //busca os dados remoto
                 val exchangesWithDetails = coroutineScope {
@@ -59,21 +61,22 @@ class ExchangeRepositoryImpl @Inject constructor(
                 val exchanges = exchangesWithDetails.distinctBy { it.id }
 
                 //Cache
-                //dao.insertAll(exchanges.map { it.toEntity() })
+                dao.clearAll()
+                dao.insertAll(exchanges.map { it.toEntity() })
 
                 emit(AppResult.Success(exchanges))
             } catch (e: HttpException) {
 
                 //cache local
                 val error = HttpErrorHandler.fromCode(e.code())
-                emit(AppResult.Error(error))
-                /*val cached = dao.getAll().map { it.toDomain() }
+                //emit(AppResult.Error(error))
+                val cached = dao.getAll().map { it.toDomain() }
                 if (cached.isNotEmpty()) {
                     emit(AppResult.Success(cached, fromCache = true))
                     //emit(AppResult.Success(cached, fromCache = false))
                 } else {
                     emit(AppResult.Error(error))
-                }*/
+                }
 
             }
         }.flowOn(Dispatchers.IO)

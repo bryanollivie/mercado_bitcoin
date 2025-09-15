@@ -2,18 +2,15 @@ package com.mercadobitcoin.ui.features.exchanges
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -29,6 +26,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -65,9 +63,7 @@ fun ExchangesScreen(
     }
 
     Scaffold(
-        topBar = {
-            TopAppBar(title = { Text("Exchanges de Bitcoin") })
-        },
+        topBar = { TopAppBar(title = { Text("Exchanges de Bitcoin") }) },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { innerPadding ->
         PullToRefreshBox(
@@ -92,12 +88,12 @@ fun ExchangesScreen(
                     )
                 }
 
-                state.exchanges.isNotEmpty() -> {
+                else -> {
                     Column {
                         // 🔹 Campo de busca + botão
-                        OutlinedTextField(
+                        /*OutlinedTextField(
                             value = query,
-                            onValueChange = { query = it }, // só atualiza local
+                            onValueChange = { query = it },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(8.dp),
@@ -105,7 +101,7 @@ fun ExchangesScreen(
                             singleLine = true,
                             trailingIcon = {
                                 IconButton(onClick = {
-                                    viewModel.searchExchanges(query) // 👈 dispara busca única
+                                    viewModel.searchExchanges(query)
                                 }) {
                                     Icon(
                                         imageVector = Icons.Default.Search,
@@ -113,38 +109,51 @@ fun ExchangesScreen(
                                     )
                                 }
                             }
-                        )
+                        )*/
 
                         // 🔹 Aplica filtro
                         val filteredExchanges = state.exchanges
                             .distinctBy { it.id }
                             .filter { it.name.contains(state.searchQuery, ignoreCase = true) }
 
-                        LazyColumn(Modifier.fillMaxSize()) {
-                            itemsIndexed(
-                                filteredExchanges,
-                                key = { index, item -> "${item.id}_$index" }
-                            ) { _, exchange ->
-                                ExchangeItem(
-                                    exchange = exchange,
-                                    onClick = {
-                                        navController.navigate(
-                                            Routes.exchangeDetailRoute(exchange.id)
-                                        )
-                                    }
-                                )
+                        if (filteredExchanges.isEmpty()) {
+                            // Quando não houver dados, renderiza a EmptyView
+                            EmptyView(onBack = { query = "" })
+                        } else {
+                            LazyColumn(Modifier.fillMaxSize()) {
+                                itemsIndexed(
+                                    filteredExchanges,
+                                    key = { index, item -> "${item.id}_$index" }
+                                ) { _, exchange ->
+                                    ExchangeItem(
+                                        exchange = exchange,
+                                        onClick = {
+                                            navController.navigate(
+                                                Routes.exchangeDetailRoute(exchange.id)
+                                            )
+                                        }
+                                    )
 
-                                // 🔹 Paginação
-                                if (exchange == filteredExchanges.lastOrNull() && !state.isLoading) {
-                                    viewModel.loadNextPage()
+                                    // 🔹 Paginação
+                                    if (exchange == filteredExchanges.lastOrNull() && !state.isLoading) {
+                                        viewModel.loadNextPage()
+                                    }
+                                }
+                                if (state.isLoading && filteredExchanges.isNotEmpty()) {
+                                    item {
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(16.dp),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            CircularProgressIndicator()
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
-                }
-
-                else -> {
-                    EmptyView()
                 }
             }
         }
@@ -157,7 +166,7 @@ fun ExchangesScreen(
                 val result = snackbarHostState.showSnackbar(
                     message = "Problemas no servidor, dados recuperados do cache",
                     actionLabel = "Recarregar",
-                    duration = SnackbarDuration.Long
+                    duration = SnackbarDuration.Short
                 )
                 if (result == SnackbarResult.ActionPerformed) {
                     viewModel.refresh()
@@ -166,5 +175,4 @@ fun ExchangesScreen(
         }
     }
 }
-
 

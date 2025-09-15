@@ -118,8 +118,10 @@ dependencies {
 
     // Images
     implementation(libs.coil.compose)
+    implementation("com.airbnb.android:lottie-compose:6.1.0")
     implementation("com.github.bumptech.glide:glide:4.16.0")
     kapt("com.github.bumptech.glide:compiler:4.16.0")
+
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.core)
