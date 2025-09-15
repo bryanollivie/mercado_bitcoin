@@ -18,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -95,15 +96,20 @@ fun ErrorView(message: String?, onRetry: () -> Unit) {
 
             // 🔹 Mensagem de erro
             Text(
-                message ?: "Erro desconhecido",
+                text = message ?: "Erro desconhecido",
                 color = Color.Red,
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()     
             )
 
             Spacer(Modifier.height(16.dp))
 
             // 🔹 Botão de tentar novamente
-            Button(onClick = onRetry) {
+            Button(
+                onClick = onRetry,
+                modifier = Modifier.padding(top = 16.dp)
+            ) {
                 Text("Tentar novamente")
             }
         }
