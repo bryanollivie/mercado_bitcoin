@@ -54,7 +54,6 @@ class ExchangesViewModel @Inject constructor(
                 }
                 .collectLatest { result ->
                     when (result) {
-
                         is AppResult.Loading -> {
                             _uiState.update { it.copy(isLoading = true, error = null) }
                         }
@@ -65,14 +64,15 @@ class ExchangesViewModel @Inject constructor(
                             } else {
                                 _uiState.value.exchanges + result.data
                             }
-                            // se a API retornou vazio, não há mais páginas
+
                             hasMorePages = result.data.isNotEmpty()
 
                             _uiState.update {
                                 it.copy(
                                     exchanges = newList,
                                     isLoading = false,
-                                    error = null
+                                    error = null,
+                                    fromCache = result.fromCache ?: false
                                 )
                             }
                         }
@@ -92,9 +92,43 @@ class ExchangesViewModel @Inject constructor(
         loadExchanges(currentPage)
     }
 
-    fun onSearchQueryChanged(query: String) {
-        _uiState.update { it.copy(searchQuery = query) }
+    /**
+     * 🔹 Busca explícita, chamada só ao clicar na lupa
+     */
+    fun searchExchanges(query: String) {
+        viewModelScope.launch {
+            // só dispara se mudou de fato
+            if (query == _uiState.value.searchQuery) return@launch
+
+            _uiState.update { it.copy(isLoading = true, error = null, searchQuery = query) }
+
+            getExchangesUseCase(page = 1)
+                .catch { e ->
+                    _uiState.update { it.copy(isLoading = false, error = e.message ?: "Erro inesperado") }
+                }
+                .collectLatest { result ->
+                    when (result) {
+                        is AppResult.Success -> {
+                            val filtered = result.data.filter {
+                                it.name.contains(query, ignoreCase = true)
+                            }
+                            _uiState.update {
+                                it.copy(
+                                    exchanges = filtered,
+                                    isLoading = false,
+                                    error = null
+                                )
+                            }
+                        }
+                        is AppResult.Error -> {
+                            _uiState.update { it.copy(isLoading = false, error = result.message) }
+                        }
+                        else -> Unit
+                    }
+                }
+        }
     }
+
 
     fun refresh() {
         currentPage = 1
@@ -103,10 +137,10 @@ class ExchangesViewModel @Inject constructor(
     }
 }
 
-
 data class ExchangesUiState(
     val exchanges: List<Exchange> = emptyList(),
     val isLoading: Boolean = false,
     val error: String? = null,
-    val searchQuery: String? = ""
+    val searchQuery: String = "",
+    val fromCache: Boolean = false
 )

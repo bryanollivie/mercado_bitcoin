@@ -1,10 +1,11 @@
-package com.mercadobitcoin.data.repository
+package com.mercadobitcoin.data.remote.repository
 
 import com.mercadobitcoin.core.common.AppResult
 import com.mercadobitcoin.core.network.ApiService
 import com.mercadobitcoin.core.network.HttpErrorHandler
-import com.mercadobitcoin.data.dto.CurrencyDto
+import com.mercadobitcoin.data.local.dao.ExchangeDao
 import com.mercadobitcoin.data.mapper.toDomainModel
+import com.mercadobitcoin.data.remote.dto.CurrencyDto
 import com.mercadobitcoin.domain.model.Exchange
 import com.mercadobitcoin.domain.model.ExchangeDetail
 import kotlinx.coroutines.Dispatchers
@@ -20,10 +21,64 @@ import javax.inject.Singleton
 
 @Singleton
 class ExchangeRepositoryImpl @Inject constructor(
-    private val api: ApiService
+    private val api: ApiService,
+    private val dao: ExchangeDao
 ) : ExchangeRepository {
 
-    override fun getExchangesWithDetails(page: Int): Flow<AppResult<List<Exchange>>> = flow {
+
+    override fun getExchangesWithDetails(page: Int): Flow<AppResult<List<Exchange>>> =
+        flow {
+            emit(AppResult.Loading)
+            try {
+
+                val listResponse = api.getExchanges(start = (page - 1) * 20 + 1)
+
+                //tenta buscar o cache para atualizar a tela e dar agilidade
+                /*val cached = dao.getAll()
+                    .map { it.toDomain() }
+                    .distinctBy { it.id }
+
+                if (cached.isNotEmpty()) {
+                    emit(AppResult.Success(cached, fromCache = true))
+                }*/
+
+
+                //busca os dados remoto
+                val exchangesWithDetails = coroutineScope {
+                    listResponse.data.map { exchangeDto ->
+                        async {
+                            try {
+                                val detail = api.getExchangeInfo(exchangeDto.id.toString())
+                                exchangeDto.toDomainModel(detail.data[exchangeDto.id.toString()])
+                            } catch (e: Exception) {
+                                exchangeDto.toDomainModel(null)
+                            }
+                        }
+                    }.awaitAll()
+                }
+                val exchanges = exchangesWithDetails.distinctBy { it.id }
+
+                //Cache
+                //dao.insertAll(exchanges.map { it.toEntity() })
+
+                emit(AppResult.Success(exchanges))
+            } catch (e: HttpException) {
+
+                //cache local
+                val error = HttpErrorHandler.fromCode(e.code())
+                emit(AppResult.Error(error))
+                /*val cached = dao.getAll().map { it.toDomain() }
+                if (cached.isNotEmpty()) {
+                    emit(AppResult.Success(cached, fromCache = true))
+                    //emit(AppResult.Success(cached, fromCache = false))
+                } else {
+                    emit(AppResult.Error(error))
+                }*/
+
+            }
+        }.flowOn(Dispatchers.IO)
+
+    /*override fun getExchangesWithDetails(page: Int): Flow<AppResult<List<Exchange>>> = flow {
 
         emit(AppResult.Loading)
         try {
@@ -49,8 +104,7 @@ class ExchangeRepositoryImpl @Inject constructor(
             emit(AppResult.Error(friendlyMessage))
         }
 
-    }.flowOn(Dispatchers.IO)
-
+    }.flowOn(Dispatchers.IO)*/
 
     override fun getExchangeDetail(id: String): Flow<AppResult<ExchangeDetail>> =
         flow {
@@ -65,9 +119,8 @@ class ExchangeRepositoryImpl @Inject constructor(
                 }
 
             } catch (e: HttpException) {
-                val error = HttpErrorHandler.fromCode(e.code(), e.message())
-                val friendlyMessage = HttpErrorHandler.userFriendlyMessage(error)
-                emit(AppResult.Error(friendlyMessage))
+                val error = HttpErrorHandler.fromCode(e.code())
+                emit(AppResult.Error(error))
             }
         }.flowOn(Dispatchers.IO)
 
@@ -84,9 +137,8 @@ class ExchangeRepositoryImpl @Inject constructor(
                 }
 
             } catch (e: HttpException) {
-                val error = HttpErrorHandler.fromCode(e.code(), e.message())
-                val friendlyMessage = HttpErrorHandler.userFriendlyMessage(error)
-                emit(AppResult.Error(friendlyMessage))
+                val error = HttpErrorHandler.fromCode(e.code())
+                emit(AppResult.Error(error))
             }
         }.flowOn(Dispatchers.IO)
 

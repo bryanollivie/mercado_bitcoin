@@ -7,7 +7,8 @@ sealed class Result<out T> {
 }
 
 sealed class AppResult<out T> {
-    data class Success<T>(val data: T): AppResult<T>()
+    //data class Success<T>(val data: T): AppResult<T>()
+    data class Success<T>(val data: T, val fromCache: Boolean? = false): AppResult<T>()
     data class Error(val message: String, val cause: Throwable? = null): AppResult<Nothing>()
     object Loading : AppResult<Nothing>()
 }

@@ -20,7 +20,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.mercadobitcoin.core.common.NumberFormatter
-import com.mercadobitcoin.data.dto.CurrencyDto
+import com.mercadobitcoin.data.remote.dto.CurrencyDto
 
 @Composable
 fun CurrencyChart(
@@ -84,9 +84,8 @@ fun CurrencyChart(
                     )
 
                    Text(
-                        text = if (currency.name.length > 20) {
-                            //currency.name.take(20) + "…"
-                            "${currency.name.take(20)}" + "…" + " [${"%.0f".format(percentage)}%]: ${
+                        text = if (currency.name.length > 15) {
+                            "${currency.name.take(15)}" + "…" + " [${"%.0f".format(percentage)}%]: ${
                                 NumberFormatter.formatCurrency(
                                     currency.priceUsd.toBigDecimal()
                                 )
