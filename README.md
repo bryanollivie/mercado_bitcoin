@@ -23,6 +23,10 @@ Este projeto foi desenvolvido como um desafio técnico, com o objetivo de consum
 - Configuração de cobertura de testes com Kover ✅  
 - Padronização de código com ktlint ✅  
 
+## 🚀 Funcionalidades Futuras
+
+- Barra de Busca   
+- Cache da tela principal
 ---
 
 ## 🛠️ Tecnologias Utilizadas
