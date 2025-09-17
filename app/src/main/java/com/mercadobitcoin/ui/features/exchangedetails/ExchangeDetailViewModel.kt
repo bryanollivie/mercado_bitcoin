@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mercadobitcoin.core.common.AppResult
-import com.mercadobitcoin.data.repository.ExchangeRepository
+import com.mercadobitcoin.data.remote.repository.ExchangeRepository
 import com.mercadobitcoin.domain.model.ExchangeDetail
 import com.mercadobitcoin.ui.navigation.Routes
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -41,7 +41,7 @@ class ExchangeDetailViewModel @Inject constructor(
                             _uiState.value = _uiState.value.copy(
                                 exchangeDetail = result.data,
                                 isLoading = true,
-                                error = null
+                                error = null,
                             )
 
                             // Encadeia chamada das moedas

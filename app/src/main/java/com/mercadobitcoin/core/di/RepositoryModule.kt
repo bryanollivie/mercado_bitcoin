@@ -1,7 +1,7 @@
 package com.mercadobitcoin.core.di
 
-import com.mercadobitcoin.data.repository.ExchangeRepository
-import com.mercadobitcoin.data.repository.ExchangeRepositoryImpl
+import com.mercadobitcoin.data.remote.repository.ExchangeRepository
+import com.mercadobitcoin.data.remote.repository.ExchangeRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

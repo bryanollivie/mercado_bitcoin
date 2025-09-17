@@ -111,10 +111,17 @@ dependencies {
     implementation(libs.okhttp.logging)
     implementation(libs.kotlinx.serialization.json)
 
+    // Room
+    implementation("androidx.room:room-runtime:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+
     // Images
     implementation(libs.coil.compose)
+    implementation("com.airbnb.android:lottie-compose:6.1.0")
     implementation("com.github.bumptech.glide:glide:4.16.0")
     kapt("com.github.bumptech.glide:compiler:4.16.0")
+
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.core)

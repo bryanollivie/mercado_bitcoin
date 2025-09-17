@@ -1,8 +1,7 @@
-package com.mercadobitcoin.data.dto
+package com.mercadobitcoin.data.remote.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.math.BigDecimal
 
 @Serializable
 data class CurrencyQuoteResponse(
@@ -28,13 +27,6 @@ data class StatusCurrencyDto(
     val elapsed: Int,
     @SerialName("credit_count") val creditCount: Int,
     val notice: String? = null
-)
-
-data class CurrencyQuote(
-    val id: Int,
-    val name: String,
-    val symbol: String,
-    val priceUsd: BigDecimal
 )
 
 @Serializable

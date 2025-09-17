@@ -1,7 +1,7 @@
-package com.mercadobitcoin.data.repository
+package com.mercadobitcoin.data.remote.repository
 
 import com.mercadobitcoin.core.common.AppResult
-import com.mercadobitcoin.data.dto.CurrencyDto
+import com.mercadobitcoin.data.remote.dto.CurrencyDto
 import com.mercadobitcoin.domain.model.Exchange
 import com.mercadobitcoin.domain.model.ExchangeDetail
 import kotlinx.coroutines.flow.Flow

@@ -1,6 +1,6 @@
 package com.mercadobitcoin.domain.model
 
-import com.mercadobitcoin.data.dto.CurrencyDto
+import com.mercadobitcoin.data.remote.dto.CurrencyDto
 import java.math.BigDecimal
 import java.time.LocalDate
 

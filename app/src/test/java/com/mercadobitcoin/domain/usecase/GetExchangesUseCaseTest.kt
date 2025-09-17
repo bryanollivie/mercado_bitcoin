@@ -2,7 +2,7 @@ package com.mercadobitcoin.domain.usecase
 
 
 import app.cash.turbine.test
-import com.mercadobitcoin.data.repository.ExchangeRepository
+import com.mercadobitcoin.data.remote.repository.ExchangeRepository
 import com.mercadobitcoin.domain.model.Exchange
 import com.mercadobitcoin.core.common.AppResult
 import io.mockk.clearAllMocks

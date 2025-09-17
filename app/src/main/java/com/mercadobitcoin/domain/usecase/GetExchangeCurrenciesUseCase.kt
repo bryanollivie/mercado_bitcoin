@@ -1,8 +1,8 @@
 package com.mercadobitcoin.domain.usecase
 
 import com.mercadobitcoin.core.common.AppResult
-import com.mercadobitcoin.data.dto.CurrencyDto
-import com.mercadobitcoin.data.repository.ExchangeRepository
+import com.mercadobitcoin.data.remote.dto.CurrencyDto
+import com.mercadobitcoin.data.remote.repository.ExchangeRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
