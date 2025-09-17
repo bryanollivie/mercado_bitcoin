@@ -4,8 +4,13 @@ Este projeto foi desenvolvido como um desafio técnico, com o objetivo de consum
 
 ![mercado_bitcoin_final webm (1)](https://github.com/user-attachments/assets/a119edda-dcce-4d54-a419-e1a52f87f835)
 
+---
 
+## 🛠️ Desenho de Arquitetura do Projeto
 
+![mercado_bitcoin_diagram](https://github.com/user-attachments/assets/44e802ac-0010-45de-a18c-4349e9c00638)
+
+---
 
 ## 🚀 Funcionalidades Entregues
 
@@ -22,7 +27,7 @@ Este projeto foi desenvolvido como um desafio técnico, com o objetivo de consum
 - Testes de UI com Compose Test e navegação ✅  
 - Configuração de cobertura de testes com Kover ✅  
 - Padronização de código com ktlint ✅  
-
+---
 ## 🚀 Funcionalidades Futuras
 
 - Barra de Busca   
@@ -45,5 +50,6 @@ Este projeto foi desenvolvido como um desafio técnico, com o objetivo de consum
 ## 📦 Como Rodar o Projeto
 
 1. Configure sua **API_KEY** no arquivo `local.properties`:
+
 
  
