@@ -8,10 +8,14 @@ Este projeto foi desenvolvido como um desafio técnico, com o objetivo de consum
 
 ## 🛠️ Desenho de Arquitetura do Projeto
 
-![mercado_bitcoin_diagram](https://github.com/user-attachments/assets/44e802ac-0010-45de-a18c-4349e9c00638)
+![mercado mov](https://github.com/user-attachments/assets/cf71a8d8-62e3-4b3d-99b4-040569171fdb)
 
 ---
+## 🛠️ Diagrama C4
 
+![mercado_bitcoin_c4](https://github.com/user-attachments/assets/fb9e7ed1-e680-48b9-aea3-05458f2afbee)
+
+---
 ## 🚀 Funcionalidades Entregues
 
 - Tela de listagem de exchanges exibindo logo, nome, volume (USD) e data de lançamento ✅  
