@@ -1,0 +1,7 @@
+## This file is a template for local.properties
+## Copy this file to local.properties and fill in your values
+## DO NOT commit local.properties to version control
+
+sdk.dir=/path/to/your/android/sdk
+CMC_API_KEY=your_coinmarketcap_api_key_here
+BASE_URL=https://pro-api.coinmarketcap.com

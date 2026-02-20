@@ -8,6 +8,6 @@ data class ExchangeEntity(
     @PrimaryKey val id: String,
     val name: String,
     val logoUrl: String?,
-    val spotVolumeUsd: Double?,
+    val spotVolumeUsd: String?,
     val dateLaunched: String?
 )

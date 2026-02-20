@@ -133,7 +133,6 @@ dependencies {
     testImplementation(libs.turbine)
     testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.compose.ui.test)
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
     androidTestImplementation("androidx.navigation:navigation-testing:2.7.6")
 

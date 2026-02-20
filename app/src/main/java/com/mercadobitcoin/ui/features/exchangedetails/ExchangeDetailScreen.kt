@@ -42,6 +42,19 @@ import com.mercadobitcoin.ui.components.CurrencyChart
 import com.mercadobitcoin.ui.components.ErrorView
 import com.mercadobitcoin.ui.components.LoadingView
 
+/**
+ * Tela de detalhes de uma exchange.
+ * Exibe informacoes completas: logo, nome, website, fees, data de lancamento
+ * e a lista de criptomoedas negociadas (com grafico).
+ *
+ * Estados visuais:
+ * - Loading: animacao de carregamento
+ * - Error: mensagem de erro com botao de retry
+ * - Success: card com informacoes + secao de moedas
+ *
+ * @param viewModel injetado pelo Hilt com o exchangeId do argumento de navegacao.
+ * @param onBack callback para voltar a tela anterior.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExchangeDetailScreen(
@@ -53,9 +66,7 @@ fun ExchangeDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-
                 title = { Text(state.exchangeDetail?.name ?: "Voltar") },
-
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Voltar")
@@ -70,7 +81,6 @@ fun ExchangeDetailScreen(
                 message = state.error,
                 onRetry = { viewModel.refresh() },
             )
-
             state.exchangeDetail != null -> ExchangeDetailContent(
                 exchange = state.exchangeDetail!!,
                 onBack = onBack,
@@ -82,6 +92,11 @@ fun ExchangeDetailScreen(
     }
 }
 
+/**
+ * Conteudo scrollavel da tela de detalhes.
+ * Renderiza um card com informacoes principais e, se houver moedas,
+ * exibe um titulo + grafico de criptomoedas.
+ */
 @Composable
 fun ExchangeDetailContent(
     exchange: ExchangeDetail,
@@ -93,8 +108,7 @@ fun ExchangeDetailContent(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-
-        //Card com informações principais
+        // Card com informacoes principais da exchange
         item {
             ElevatedCard(
                 modifier = Modifier.fillMaxWidth(),
@@ -123,17 +137,18 @@ fun ExchangeDetailContent(
 
                     Spacer(Modifier.height(8.dp))
 
+                    // Taxa taker
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Start
                     ) {
-
                         Icon(Icons.Default.ShoppingCart, contentDescription = null)
                         Spacer(Modifier.width(6.dp))
                         Text("Taker Fee: ${NumberFormatter.formatPercent(exchange.takerFee) ?: "-"}")
                     }
 
+                    // Taxa maker
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
@@ -144,6 +159,7 @@ fun ExchangeDetailContent(
                         Text("Maker Fee: ${NumberFormatter.formatPercent(exchange.makerFee) ?: "-"}")
                     }
 
+                    // Data de lancamento
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
@@ -157,17 +173,15 @@ fun ExchangeDetailContent(
             }
         }
 
-        if(exchange.currencies.isNotEmpty()) {
-            //Título da seção moedas
+        // Secao de moedas negociadas (exibida apenas se houver dados)
+        if (exchange.currencies.isNotEmpty()) {
             item {
                 Text("Moedas", style = MaterialTheme.typography.titleLarge)
             }
 
-            //Grafico das moedas
             item {
                 CurrencyChart(exchange.currencies)
             }
-
         }
     }
 }

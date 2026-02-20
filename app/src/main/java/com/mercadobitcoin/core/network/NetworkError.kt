@@ -1,5 +1,14 @@
 package com.mercadobitcoin.core.network
 
+import com.mercadobitcoin.R
+import com.mercadobitcoin.core.common.ResourceProvider
+import javax.inject.Inject
+import javax.inject.Singleton
+
+/**
+ * Representa os tipos de erro de rede conhecidos pela aplicacao.
+ * Utilizado para tipagem segura em tratamento de erros sem depender de strings.
+ */
 sealed class NetworkError {
     object TooManyRequests : NetworkError()
     object Unauthorized : NetworkError()
@@ -8,48 +17,29 @@ sealed class NetworkError {
     data class Unknown(val code: Int, val message: String?) : NetworkError()
 }
 
-object HttpErrorHandler {
-
+/**
+ * Converte codigos HTTP em mensagens de erro localizadas para o usuario.
+ * Utiliza [ResourceProvider] para resolver strings de `strings.xml`,
+ * garantindo suporte a i18n sem acoplar a camada de dados ao Android Context.
+ */
+@Singleton
+class HttpErrorHandler @Inject constructor(
+    private val resourceProvider: ResourceProvider
+) {
+    /**
+     * Mapeia um codigo HTTP para uma mensagem de erro amigavel e localizada.
+     *
+     * @param code codigo HTTP da resposta (ex.: 401, 404, 429, 500).
+     * @return mensagem localizada pronta para exibicao na UI.
+     */
     fun fromCode(code: Int): String {
         return when (code) {
-            401 -> "Sessão expirada. Faça login novamente."
-            404 -> "O recurso solicitado não foi encontrado."
-            429 -> "Estamos enfrentando instabilidade no servidor. Tente novamente mais tarde."
-                    //"Você fez muitas requisições.Aguarde alguns segundos e tente novamente."
-            500 -> "Estamos enfrentando instabilidade no servidor. Tente novamente mais tarde."
-            1008 -> "Você excedeu o limite de taxa de solicitações HTTP da sua chave de API. Os limites de taxa são redefinidos a cada minuto."
-            else ->  "Erro inesperado (HTTP:${code}).Tente novamente"
+            401 -> resourceProvider.getString(R.string.error_session_expired)
+            404 -> resourceProvider.getString(R.string.error_not_found)
+            429 -> resourceProvider.getString(R.string.error_too_many_requests)
+            500 -> resourceProvider.getString(R.string.error_server)
+            1008 -> resourceProvider.getString(R.string.error_rate_limit)
+            else -> resourceProvider.getString(R.string.error_unexpected, code)
         }
     }
-
-    fun userFriendlyMessage(error: NetworkError): String {
-        return when (error) {
-        //return when (locale.language) {
-           // when (error) {
-                is NetworkError.Unauthorized ->
-                    "Sessão expirada. Faça login novamente."
-                is NetworkError.NotFound ->
-                    "O recurso solicitado não foi encontrado."
-                is NetworkError.TooManyRequests ->
-                    "Estamos enfrentando instabilidade no servidor. Tente novamente mais tarde."
-                    //"Você fez muitas requisições.Aguarde alguns segundos e tente novamente."
-                is NetworkError.InternalServerError ->
-                    "Estamos enfrentando instabilidade no servidor. Tente novamente mais tarde."
-                is NetworkError.Unknown ->
-                    "Erro inesperado (${error.code}). ${error.message ?: "Tente novamente"}"
-            }
-            /*else -> when (error) { // padrão inglês
-                is NetworkError.Unauthorized ->
-                    "Session expired. Please log in again."
-                is NetworkError.NotFound ->
-                    "The requested resource was not found."
-                is NetworkError.TooManyRequests ->
-                    "Too many requests. Please wait a few seconds and try again."
-                is NetworkError.InternalServerError ->
-                    "We are experiencing server issues. Please try again later."
-                is NetworkError.Unknown ->
-                    "Unexpected error (${error.code}). ${error.message ?: "Please try again"}"
-            }*/
-        }
-    }
-
+}

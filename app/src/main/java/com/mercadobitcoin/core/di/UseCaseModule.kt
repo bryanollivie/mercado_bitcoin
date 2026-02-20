@@ -9,6 +9,11 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 
+/**
+ * Modulo Hilt para provisao dos casos de uso da camada de dominio.
+ * Instalado no [ViewModelComponent] para que o ciclo de vida dos use cases
+ * acompanhe o dos ViewModels que os utilizam.
+ */
 @Module
 @InstallIn(ViewModelComponent::class)
 object UseCaseModule {

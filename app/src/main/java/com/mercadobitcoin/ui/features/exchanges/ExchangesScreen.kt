@@ -38,6 +38,19 @@ import com.mercadobitcoin.ui.components.LoadingView
 import com.mercadobitcoin.ui.navigation.Routes
 import kotlinx.coroutines.launch
 
+/**
+ * Tela principal que exibe a lista de exchanges de criptomoedas.
+ *
+ * Funcionalidades:
+ * - Pull-to-refresh para recarregar dados
+ * - Paginacao infinita (dispara ao atingir o ultimo item visivel)
+ * - Filtro client-side por nome via searchQuery
+ * - Snackbar informativo quando dados vem do cache local
+ * - Estados visuais: Loading, Error (com retry), Empty, Lista
+ *
+ * @param navController controlador de navegacao para abrir a tela de detalhes.
+ * @param viewModel injetado automaticamente pelo Hilt.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -51,6 +64,7 @@ fun ExchangesScreen(
     var query by remember { mutableStateOf("") }
     var isRefreshing by remember { mutableStateOf(false) }
 
+    // Sincroniza o estado de refreshing com o loading do ViewModel
     LaunchedEffect(state.isLoading) {
         if (!state.isLoading) {
             isRefreshing = false
@@ -72,10 +86,12 @@ fun ExchangesScreen(
                 .padding(innerPadding)
         ) {
             when {
+                // Estado de carregamento inicial (lista vazia)
                 state.isLoading && state.exchanges.isEmpty() -> {
                     LoadingView()
                 }
 
+                // Estado de erro
                 state.error != null -> {
                     ErrorView(
                         message = state.error,
@@ -83,36 +99,15 @@ fun ExchangesScreen(
                     )
                 }
 
+                // Estado normal: lista de exchanges
                 else -> {
                     Column {
-                       // Campo de busca + botão
-                        /*OutlinedTextField(
-                            value = query,
-                            onValueChange = { query = it },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp),
-                            placeholder = { Text("Pesquisar exchanges...") },
-                            singleLine = true,
-                            trailingIcon = {
-                                IconButton(onClick = {
-                                    viewModel.searchExchanges(query)
-                                }) {
-                                    Icon(
-                                        imageVector = Icons.Default.Search,
-                                        contentDescription = "Buscar"
-                                    )
-                                }
-                            }
-                        )*/
-
-                        //aplica filtro
+                        // Aplica filtro e remove duplicatas por ID
                         val filteredExchanges = state.exchanges
                             .distinctBy { it.id }
                             .filter { it.name.contains(state.searchQuery, ignoreCase = true) }
 
                         if (filteredExchanges.isEmpty()) {
-                            // Quando não houver dados, renderiza a EmptyView
                             EmptyView(onBack = { query = "" })
                         } else {
                             LazyColumn(Modifier.fillMaxSize()) {
@@ -129,11 +124,13 @@ fun ExchangesScreen(
                                         }
                                     )
 
-                                    //paginação
+                                    // Dispara paginacao ao renderizar o ultimo item
                                     if (exchange == filteredExchanges.lastOrNull() && !state.isLoading) {
                                         viewModel.loadNextPage()
                                     }
                                 }
+
+                                // Indicador de carregamento no rodape (paginacao)
                                 if (state.isLoading && filteredExchanges.isNotEmpty()) {
                                     item {
                                         Box(
@@ -154,7 +151,7 @@ fun ExchangesScreen(
         }
     }
 
-    //mostrar Snackbar quando dados vierem do cache
+    // Exibe Snackbar quando os dados exibidos vieram do cache local
     LaunchedEffect(state.fromCache) {
         if (state.fromCache) {
             scope.launch {
@@ -170,4 +167,3 @@ fun ExchangesScreen(
         }
     }
 }
-

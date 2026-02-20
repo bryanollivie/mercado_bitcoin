@@ -18,10 +18,23 @@ import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
+/**
+ * Modulo Hilt que configura toda a stack de rede da aplicacao.
+ * Todos os componentes sao Singleton para reutilizacao ao longo do ciclo de vida do app.
+ *
+ * Componentes fornecidos:
+ * - [Json] configurado para ignorar campos desconhecidos da API
+ * - Interceptors para autenticacao (API key) e logging (apenas em debug)
+ * - [OkHttpClient] com timeouts de 30s
+ * - [Retrofit] apontando para a CoinMarketCap API
+ * - [ApiService] criado via Retrofit
+ * - [DispatcherProvider] para injecao de dispatchers testaveis
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
+    /** Configura o parser JSON com tolerancia a campos desconhecidos da API. */
     @Provides
     @Singleton
     fun provideJson(): Json = Json {
@@ -29,6 +42,10 @@ object NetworkModule {
         coerceInputValues = true
     }
 
+    /**
+     * Interceptor que adiciona o header de autenticacao da CoinMarketCap API
+     * em todas as requisicoes HTTP.
+     */
     @Provides
     @Singleton
     fun provideApiKeyInterceptor(): Interceptor = Interceptor { chain ->
@@ -40,6 +57,7 @@ object NetworkModule {
         chain.proceed(request)
     }
 
+    /** Interceptor de logging: exibe body completo em debug, desativado em release. */
     @Provides
     @Singleton
     fun provideLoggingInterceptor(): HttpLoggingInterceptor {
@@ -52,6 +70,7 @@ object NetworkModule {
         }
     }
 
+    /** Cliente HTTP com interceptors de auth e logging, e timeouts de 30 segundos. */
     @Provides
     @Singleton
     fun provideOkHttpClient(
@@ -67,6 +86,7 @@ object NetworkModule {
             .build()
     }
 
+    /** Instancia Retrofit configurada com base URL e conversor kotlinx.serialization. */
     @Provides
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient, json: Json): Retrofit {
@@ -77,10 +97,12 @@ object NetworkModule {
             .build()
     }
 
+    /** Cria a implementacao do [ApiService] a partir do Retrofit. */
     @Provides
     @Singleton
     fun provideApiService(retrofit: Retrofit): ApiService = retrofit.create(ApiService::class.java)
 
+    /** Fornece o provider de dispatchers (substituivel em testes unitarios). */
     @Provides
     @Singleton
     fun provideDispatcherProvider(): DispatcherProvider = DefaultDispatcherProvider()

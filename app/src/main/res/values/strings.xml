@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">MercadoBitcoin</string>
+
+    <!-- Error messages -->
+    <string name="error_session_expired">Sessão expirada. Faça login novamente.</string>
+    <string name="error_not_found">O recurso solicitado não foi encontrado.</string>
+    <string name="error_too_many_requests">Estamos enfrentando instabilidade no servidor. Tente novamente mais tarde.</string>
+    <string name="error_server">Estamos enfrentando instabilidade no servidor. Tente novamente mais tarde.</string>
+    <string name="error_rate_limit">Você excedeu o limite de taxa de solicitações HTTP da sua chave de API. Os limites de taxa são redefinidos a cada minuto.</string>
+    <string name="error_unexpected">Erro inesperado (HTTP:%1$d). Tente novamente</string>
+    <string name="error_unknown">Erro desconhecido</string>
+    <string name="error_timeout">Tempo limite esgotado. Tente novamente.</string>
 </resources>

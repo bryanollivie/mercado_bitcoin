@@ -1,26 +1,35 @@
-/*
 package com.mercadobitcoin.ui
 
 import app.cash.turbine.test
+import com.mercadobitcoin.core.common.AppResult
 import com.mercadobitcoin.domain.model.Exchange
 import com.mercadobitcoin.domain.usecase.GetExchangesUseCase
 import com.mercadobitcoin.ui.features.exchanges.ExchangesUiState
 import com.mercadobitcoin.ui.features.exchanges.ExchangesViewModel
-import com.mercadobitcoin.util.AppResult
-import io.mockk.*
+import com.mercadobitcoin.util.MainDispatcherRule
+import io.mockk.clearAllMocks
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.*
-import org.junit.*
-import org.junit.Assert.*
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
+import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import java.math.BigDecimal
 
 @ExperimentalCoroutinesApi
 class ExchangesViewModelTest {
 
     @get:Rule
-    val mainDispatcherRule = MainDispatcherRu()
     val mainDispatcherRule = MainDispatcherRule()
 
     private lateinit var getExchangesUseCase: GetExchangesUseCase
@@ -38,16 +47,13 @@ class ExchangesViewModelTest {
 
     @Test
     fun `initial state is loading when viewModel is created`() = runTest {
-        // Given
         coEvery { getExchangesUseCase(1) } returns flow {
             emit(AppResult.Loading)
         }
 
-        // When
         viewModel = ExchangesViewModel(getExchangesUseCase)
         advanceUntilIdle()
 
-        // Then
         viewModel.uiState.test {
             val state = awaitItem()
             assertTrue(state.isLoading)
@@ -58,7 +64,6 @@ class ExchangesViewModelTest {
 
     @Test
     fun `when use case returns success, ui state is updated with exchanges`() = runTest {
-        // Given
         val exchanges = listOf(
             Exchange("1", "Binance", null, BigDecimal.TEN, null),
             Exchange("2", "Coinbase", null, BigDecimal.ONE, null)
@@ -68,11 +73,9 @@ class ExchangesViewModelTest {
             emit(AppResult.Success(exchanges))
         }
 
-        // When
         viewModel = ExchangesViewModel(getExchangesUseCase)
         advanceUntilIdle()
 
-        // Then
         val state = viewModel.uiState.value
         assertFalse(state.isLoading)
         assertEquals(2, state.exchanges.size)
@@ -82,16 +85,13 @@ class ExchangesViewModelTest {
 
     @Test
     fun `when use case returns error, ui state contains error message`() = runTest {
-        // Given
         coEvery { getExchangesUseCase(1) } returns flow {
-            emit(AppResult.Error(Exception("API Error").message.toString()))
+            emit(AppResult.Error("API Error"))
         }
 
-        // When
         viewModel = ExchangesViewModel(getExchangesUseCase)
         advanceUntilIdle()
 
-        // Then
         val state = viewModel.uiState.value
         assertFalse(state.isLoading)
         assertTrue(state.exchanges.isEmpty())
@@ -100,7 +100,6 @@ class ExchangesViewModelTest {
 
     @Test
     fun `refresh triggers new data load`() = runTest {
-        // Given
         var callCount = 0
         coEvery { getExchangesUseCase(1) } returns flow {
             callCount++
@@ -111,18 +110,15 @@ class ExchangesViewModelTest {
         advanceUntilIdle()
         assertEquals(1, callCount)
 
-        // When
         viewModel.refresh()
         advanceUntilIdle()
 
-        // Then
         assertEquals(2, callCount)
         coVerify(exactly = 2) { getExchangesUseCase(1) }
     }
 
     @Test
     fun `state transitions correctly from loading to success to error`() = runTest {
-        // Given
         val exchanges = listOf(Exchange("1", "Test", null, null, null))
         val stateFlow = mutableListOf<ExchangesUiState>()
 
@@ -133,14 +129,12 @@ class ExchangesViewModelTest {
             },
             flow {
                 emit(AppResult.Loading)
-                emit(AppResult.Error(Exception("Error").message.toString()))
+                emit(AppResult.Error("Error"))
             }
         )
 
-        // When
         viewModel = ExchangesViewModel(getExchangesUseCase)
 
-        // Collect states
         val job = launch {
             viewModel.uiState.collect { stateFlow.add(it) }
         }
@@ -151,9 +145,8 @@ class ExchangesViewModelTest {
 
         job.cancel()
 
-        // Then
         assertTrue(stateFlow.any { it.isLoading })
         assertTrue(stateFlow.any { it.exchanges.isNotEmpty() })
         assertTrue(stateFlow.any { it.error != null })
     }
-}*/
+}

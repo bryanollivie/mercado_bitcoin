@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import com.mercadobitcoin.data.local.dao.ExchangeDao
 import com.mercadobitcoin.data.local.entity.ExchangeEntity
 
-@Database(entities = [ExchangeEntity::class], version = 1)
+@Database(entities = [ExchangeEntity::class], version = 2)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun exchangeDao(): ExchangeDao
 }
